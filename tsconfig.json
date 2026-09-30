@@ -1,0 +1,12 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": [
+    "dist",
+    // Pre-bundled, already-minified Three.js. Not ours to type-check, and it is
+    // half a megabyte of mangled identifiers.
+    "public/q3d.js",
+    // The original single-file build, kept for reference only.
+    "reference"
+  ]
+}

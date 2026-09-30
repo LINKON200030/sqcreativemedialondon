@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="SQ Creative Media">
+  <!-- The Q from the SQ wordmark, redrawn as vectors so it stays crisp at 16px.
+       The S and Q interlock in the logo artwork, so a bitmap crop of the Q always
+       carries a fragment of the S with it. -->
+  <rect width="100" height="100" rx="22" fill="#11110F"/>
+  <g fill="none" stroke="#E2161F" stroke-width="15">
+    <!-- Ring, open at the lower right where the tail passes through. -->
+    <path d="M 50 20 a 27 27 0 1 1 -19.1 46.1" stroke-linecap="butt"/>
+  </g>
+  <!-- Tail: a thick diagonal running out past the ring, as in the wordmark. -->
+  <path d="M 52 50 L 82 80 L 64 80 L 40 56 Z" fill="#E2161F"/>
+</svg>

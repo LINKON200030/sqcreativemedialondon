@@ -1,0 +1,81 @@
+---
+/**
+ * The three-card service bento from the original design, with each card now
+ * linking through to its own service page.
+ */
+import { Image } from 'astro:assets';
+import { services } from '../data/services';
+import { serviceImages } from '../lib/images';
+
+interface Props {
+  heading?: string;
+  intro?: string;
+}
+
+const {
+  heading = 'One team for your website, marketing and content',
+  intro = 'Most businesses juggle a web developer, a marketer and a photographer. We do all three, so your brand looks and sounds the same everywhere customers find you.',
+} = Astro.props;
+
+/** The first card is the wide one, as in the original layout. */
+const [lead, ...rest] = services;
+---
+
+<div class="section-head">
+  <h2>{heading}</h2>
+  <p>{intro}</p>
+</div>
+
+<div class="bento">
+  {
+    [lead, ...rest].map((service, i) => (
+      <article class:list={['svc', i === 0 ? 'svc-lg' : 'svc-sm']}>
+        <div class="svc-art">
+          <Image
+            src={serviceImages[service.slug]}
+            width={560}
+            alt=""
+            loading={i === 0 ? 'eager' : 'lazy'}
+          />
+        </div>
+        <div class="svc-body">
+          <h3><a href={`/services/${service.slug}/`}>{service.name}</a></h3>
+          <p>{service.summary}</p>
+          <ul>
+            {service.bullets.map((b) => (
+              <li>{b}</li>
+            ))}
+          </ul>
+          <p class="svc-more">
+            <a href={`/services/${service.slug}/`}>More about {service.name.toLowerCase()}</a>
+          </p>
+        </div>
+      </article>
+    ))
+  }
+</div>
+
+<style>
+  /* The heading and the "more about" line become links; keep them looking like
+     the original static text until hovered. */
+  .svc h3 a {
+    text-decoration: none;
+  }
+  .svc h3 a:hover {
+    color: var(--accent-ink);
+  }
+  .svc-more {
+    margin-top: 4px;
+  }
+  .svc-more a {
+    font: 700 14px/1 Montserrat, system-ui, sans-serif;
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.2s ease;
+  }
+  .svc-more a:hover {
+    border-bottom-color: currentColor;
+  }
+</style>

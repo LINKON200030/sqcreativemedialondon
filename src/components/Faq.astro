@@ -1,0 +1,34 @@
+---
+/**
+ * FAQ list built on native <details>/<summary> — no JavaScript, keyboard
+ * accessible for free, and the answer text is in the HTML whether or not the
+ * panel is open, so search engines and screen readers both see all of it.
+ *
+ * Pair with faqPage() from lib/schema so the markup matches the visible text.
+ */
+interface Props {
+  heading?: string;
+  intro?: string;
+  faqs: { q: string; a: string }[];
+  /** Open the first item. Useful when the FAQ is the main point of the page. */
+  openFirst?: boolean;
+}
+
+const { heading = 'Common questions', intro, faqs, openFirst = false } = Astro.props;
+---
+
+<div class="section-head">
+  <h2>{heading}</h2>
+  {intro && <p>{intro}</p>}
+</div>
+
+<div class="faq">
+  {
+    faqs.map((faq, i) => (
+      <details open={openFirst && i === 0}>
+        <summary>{faq.q}</summary>
+        <p class="answer">{faq.a}</p>
+      </details>
+    ))
+  }
+</div>

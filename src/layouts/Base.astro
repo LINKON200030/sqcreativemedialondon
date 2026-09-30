@@ -1,0 +1,123 @@
+---
+/**
+ * The HTML shell for every page: head, header, content slot, footer and the
+ * small amount of JavaScript the site needs.
+ *
+ * The page ships as finished HTML. The only scripts are the theme toggle and
+ * the mobile menu — about 1 kB between them — plus Astro's link prefetcher.
+ * The 3D logo on the homepage loads separately and only when it is visible.
+ */
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { graph, organization, website, webPage, breadcrumbs, type Crumb } from '../lib/schema';
+import { SITE_URL } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  index?: boolean;
+  ogImage?: string;
+  bareTitle?: boolean;
+  /** Breadcrumb trail, without the Home crumb — that is added here. */
+  crumbs?: Crumb[];
+  /** Extra JSON-LD entities to merge into this page's @graph. */
+  schemas?: Record<string, unknown>[];
+}
+
+const { title, description, index = true, ogImage, bareTitle = false, crumbs = [], schemas = [] } = Astro.props;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site ?? SITE_URL).href;
+
+/**
+ * One @graph per page containing the business, the site, this page, the
+ * breadcrumb trail and whatever the page adds (Service, FAQPage, and so on).
+ */
+const jsonLd = graph(
+  organization(),
+  website(),
+  webPage(pageUrl, bareTitle ? title : `${title} | SQ Creative Media London`, description),
+  ...(crumbs.length
+    ? [breadcrumbs([{ name: 'Home', url: `${SITE_URL}/` }, ...crumbs])]
+    : []),
+  ...schemas,
+);
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <BaseHead {title} {description} {index} {ogImage} {bareTitle} />
+
+    <!-- Runs before first paint so a visitor who chose a theme never sees the
+         other one flash. Kept inline and tiny for that reason. -->
+    <script is:inline>
+      try {
+        var t = localStorage.getItem('sq-theme');
+        if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+
+    <script type="application/ld+json" is:inline set:html={jsonLd} />
+  </head>
+
+  <body>
+    <Header />
+    <slot />
+    <Footer />
+
+    <script>
+      // Theme toggle and mobile menu. Both degrade safely: without JavaScript
+      // the site follows the operating system theme and the menu button is the
+      // only thing that stops working.
+      const root = document.documentElement;
+      const darkMQ = window.matchMedia('(prefers-color-scheme: dark)');
+      const effectiveTheme = () => root.dataset.theme || (darkMQ.matches ? 'dark' : 'light');
+
+      const switches = document.querySelectorAll<HTMLButtonElement>('[data-set-theme]');
+
+      function syncTheme() {
+        const current = effectiveTheme();
+        switches.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.setTheme === current)));
+        window.dispatchEvent(new CustomEvent('sq-theme', { detail: current }));
+      }
+
+      switches.forEach((b) => {
+        b.addEventListener('click', () => {
+          const next = b.dataset.setTheme;
+          if (!next) return;
+          root.dataset.theme = next;
+          try {
+            localStorage.setItem('sq-theme', next);
+          } catch (e) {}
+          syncTheme();
+        });
+      });
+
+      new MutationObserver(syncTheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+      darkMQ.addEventListener('change', syncTheme);
+      syncTheme();
+
+      const menuBtn = document.querySelector<HTMLButtonElement>('.menu-btn');
+      const menu = document.getElementById('mobile-menu');
+
+      if (menuBtn && menu) {
+        const setMenu = (open: boolean) => {
+          menu.hidden = !open;
+          menuBtn.setAttribute('aria-expanded', String(open));
+          menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        };
+        // `hidden` is typed `boolean | "until-found"`, so coerce before toggling.
+        menuBtn.addEventListener('click', () => setMenu(Boolean(menu.hidden)));
+        menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+        // Escape closes the menu, and focus returns to the button that opened it.
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !menu.hidden) {
+            setMenu(false);
+            menuBtn.focus();
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

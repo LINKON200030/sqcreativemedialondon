@@ -1,0 +1,170 @@
+---
+/**
+ * About page.
+ *
+ * This is the site's experience-and-trust page. Google's quality guidance leans
+ * heavily on whether a site makes clear who is behind it, and for a local
+ * service business the same information is what a customer is looking for
+ * anyway: who are you, where are you, and can I come and find you.
+ *
+ * So it states the company number, the registered address and the connection to
+ * the photo studio plainly rather than hiding them in the footer.
+ */
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site } from '../data/site';
+import { areas } from '../data/areas';
+
+const crumbs = [{ name: 'About' }];
+const tier1 = areas.filter((a) => a.tier === 1).map((a) => a.name);
+---
+
+<Base
+  title="About Us"
+  description={`The agency side of ${site.legalName}, a walk-in photo studio at ${site.address.street}, ${site.address.postcode}. Web design, marketing and photography from one local team.`}
+  crumbs={crumbs}
+>
+  <Breadcrumbs crumbs={crumbs} />
+
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">About</p>
+        <h1>A photo studio that learned to build websites</h1>
+        <p class="lede">
+          {site.name} is the agency side of {site.legalName}, the walk-in photo studio at {site.address.street} in
+          Surrey Quays. That is an unusual way round to arrive at web design, and it is the reason we work the way
+          we do.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap with-aside">
+        <div class="prose">
+          <h2>How we got here</h2>
+          <p>
+            The studio came first. Passport photos, portraits, prints, photo gifts — a shop on Lower Road with a
+            counter and a queue. Like most small businesses, it needed a website that could take bookings, and like
+            most small businesses, what it got the first time round was slow, hard to change and impossible to find
+            in search.
+          </p>
+          <p>
+            So we built it ourselves, then the booking system behind it, then the order and invoicing system that
+            still runs the studio today. Other businesses on the street saw it working and asked. That is genuinely
+            the whole origin story: we are not a marketing agency that discovered local business, we are a local
+            business that had to learn this to survive and then got asked to do it for the neighbours.
+          </p>
+
+          <h2>What that means for your project</h2>
+          <p>
+            We have been the client. We know what it is like to be quoted for a website by someone who will not
+            explain what any of it is for, to pay a monthly fee for marketing with no way of telling whether it is
+            working, and to be told a rebuild will take six weeks and then wait five months.
+          </p>
+          <ul>
+            <li>
+              <strong>A fixed price before work starts.</strong> A written plan, a timeline and a number. No hourly
+              creep.
+            </li>
+            <li>
+              <strong>Plain English.</strong> If we cannot explain why something is worth paying for, you should not
+              pay for it.
+            </li>
+            <li>
+              <strong>An honest no.</strong> We will tell you when ads are the wrong answer, when your existing site
+              is worth repairing rather than replacing, and when the free half of local SEO is all you actually need.
+            </li>
+            <li>
+              <strong>You own everything.</strong> The design, the content, the domain and the accounts. You can
+              leave whenever you like and take it all with you.
+            </li>
+          </ul>
+
+          <h2>Local, in the literal sense</h2>
+          <p>
+            Search for a web designer in Surrey Quays and most of what comes back is agencies in other counties
+            running a page for every postcode in Britain. There is nothing illegal about it, but they cannot meet you
+            on Tuesday, they have never walked down Lower Road, and they do not know that {tier1.join(', ')} are
+            four different markets rather than one.
+          </p>
+          <p>
+            We are at {site.address.street}, {site.address.locality} {site.address.postcode}. You can walk in. We
+            work across {areas.length} areas of London and each one has <a href="/areas/">its own page</a>, written
+            about that place.
+          </p>
+
+          <h2>The legal bit</h2>
+          <p>
+            {site.name} is a trading name of {site.legalName}, registered in England and Wales, company number {
+              site.companyNumber
+            }. Registered office: {site.address.street}, {site.address.locality} {site.address.postcode}. You can
+            look us up at Companies House — we would rather you did.
+          </p>
+        </div>
+
+        <aside class="aside-card">
+          <h2>Find us</h2>
+          <dl>
+            <div>
+              <dt>Studio</dt>
+              <dd>{site.address.street}<br />{site.address.locality} {site.address.postcode}</dd>
+            </div>
+            <div>
+              <dt>Phone</dt>
+              <dd><a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></dd>
+            </div>
+            <div>
+              <dt>Email</dt>
+              <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+            </div>
+            <div>
+              <dt>Instagram</dt>
+              <dd>
+                <a href={site.instagram} target="_blank" rel="noopener noreferrer">{site.instagramHandle}</a>
+              </dd>
+            </div>
+            <div>
+              <dt>Company number</dt>
+              <dd>{site.companyNumber}</dd>
+            </div>
+          </dl>
+          <a class="btn btn-primary" href="/contact/">Start a project</a>
+          <p>
+            The photo studio at the same address is <a href={site.sister.url} rel="noopener">{site.sister.name}</a>.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>What we are not</h2>
+          <p>Worth saying, so you can rule us out quickly if we are the wrong fit.</p>
+        </div>
+        <ul class="trust-row">
+          <li>
+            <strong>Not a template shop</strong>
+            <span>Everything is designed for the business. If you want a £200 theme install, we are not it.</span>
+          </li>
+          <li>
+            <strong>Not a big agency</strong>
+            <span>You get the people doing the work, not an account manager relaying messages.</span>
+          </li>
+          <li>
+            <strong>Not an SEO guarantee</strong>
+            <span>Nobody can promise a Google position. Anyone who does is selling you something else.</span>
+          </li>
+          <li>
+            <strong>Not locked in</strong>
+            <span>Projects are fixed price. Marketing is month to month, thirty days notice.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <CtaBand />
+  </main>
+</Base>

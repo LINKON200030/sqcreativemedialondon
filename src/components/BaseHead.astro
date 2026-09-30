@@ -1,0 +1,115 @@
+---
+/**
+ * Everything that goes in <head>. Used by every page through Base.astro.
+ *
+ * The canonical URL is derived from the current path rather than passed in, so
+ * it cannot drift out of step with the route.
+ */
+import { site, SITE_URL } from '../data/site';
+import '../styles/main.css';
+
+interface Props {
+  /** Page title without the brand suffix. Aim for under 35 characters. */
+  title: string;
+  /** Meta description. 120–158 characters is the useful range. */
+  description: string;
+  /**
+   * Set false on pages that should stay out of the index (thank-you, 404).
+   * Note this only removes them from search results — it does not hide them.
+   */
+  index?: boolean;
+  /** Override the social share image. Defaults to the site-wide card. */
+  ogImage?: string;
+  /** 'website' for most pages, 'article' for anything dated. */
+  ogType?: 'website' | 'article';
+  /**
+   * Suppresses the " | SQ Creative Media London" suffix, for the homepage where
+   * the brand name is already the first thing in the title.
+   */
+  bareTitle?: boolean;
+}
+
+const {
+  title,
+  description,
+  index = true,
+  ogImage = '/og-image.png',
+  ogType = 'website',
+  bareTitle = false,
+} = Astro.props;
+
+const fullTitle = bareTitle ? title : `${title} | ${site.name}`;
+
+/**
+ * Canonical URL. Astro.site comes from astro.config.mjs, and trailingSlash is
+ * 'always', so pathname is already normalised.
+ */
+const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE_URL).href;
+const ogImageUrl = new URL(ogImage, Astro.site ?? SITE_URL).href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+{
+  index ? (
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  ) : (
+    <meta name="robots" content="noindex, follow" />
+  )
+}
+
+<!-- Open Graph: controls how the page looks when shared on Facebook, WhatsApp,
+     LinkedIn and Slack. WhatsApp matters most here — it is how a lot of local
+     referrals actually get passed around. -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={`${site.name} — ${site.tagline}`} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:locale" content="en_GB" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+
+<!-- Geographic meta. Ignored by Google, but still read by some local
+     directories and aggregators that syndicate business listings. -->
+<meta name="geo.region" content="GB-SWK" />
+<meta name="geo.placename" content="Surrey Quays, London" />
+<meta name="geo.position" content={`${site.geo.lat};${site.geo.lng}`} />
+<meta name="ICBM" content={`${site.geo.lat}, ${site.geo.lng}`} />
+
+<meta name="author" content={site.name} />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Matches the token backgrounds in tokens.css so the browser chrome does not
+     flash the wrong colour on load. -->
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FAFAF8" />
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#11110F" />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<!-- Both fonts are used above the fold, so preloading them removes a round trip
+     that would otherwise delay the largest contentful paint. -->
+<link
+  rel="preload"
+  href="/fonts/montserrat-variable.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin="anonymous"
+/>
+<link rel="preload" href="/fonts/dm-sans-variable.woff2" as="font" type="font/woff2" crossorigin="anonymous" />

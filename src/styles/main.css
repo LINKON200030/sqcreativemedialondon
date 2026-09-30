@@ -1,0 +1,21 @@
+/**
+ * Single stylesheet entry point, imported once by the base layout.
+ *
+ * Order matters:
+ *   fonts       — @font-face only
+ *   tokens      — design tokens, light and dark
+ *   base-core   — reset, typography, layout primitives, buttons
+ *   components  — nav, hero, service cards, case studies, steps, form, footer
+ *   responsive  — media queries for the components above
+ *   pages       — page types added in the rebuild (areas, services, prose, FAQ)
+ *
+ * tokens, base-core, components and responsive are ported unchanged from the
+ * original single-file build, so the design is identical.
+ */
+
+@import './fonts.css';
+@import './tokens.css';
+@import './base-core.css';
+@import './components.css';
+@import './responsive.css';
+@import './pages.css';

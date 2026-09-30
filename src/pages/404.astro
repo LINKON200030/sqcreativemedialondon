@@ -1,0 +1,46 @@
+---
+/**
+ * Not-found page. Astro builds this to /404.html, which most static hosts
+ * (Cloudflare Pages, Netlify, Vercel, GitHub Pages) serve automatically.
+ *
+ * Noindexed, and it offers routes onwards rather than being a dead end — a
+ * visitor who mistyped a URL is still a customer.
+ */
+import Base from '../layouts/Base.astro';
+import { services } from '../data/services';
+import { site } from '../data/site';
+---
+
+<Base
+  title="Page Not Found"
+  description="That page does not exist. Try our services, our work, or the areas we cover."
+  index={false}
+>
+  <main class="wrap notfound">
+    <h1>404</h1>
+    <p>
+      That page does not exist — it may have moved, or the link may have a typo in it. Here is where most people
+      were heading.
+    </p>
+    <ul class="nearby">
+      <li><a href="/">Home</a></li>
+      {services.map((s) => <li><a href={`/services/${s.slug}/`}>{s.name}</a></li>)}
+      <li><a href="/work/">Work</a></li>
+      <li><a href="/areas/">Areas</a></li>
+      <li><a href="/pricing/">Pricing</a></li>
+      <li><a href="/contact/">Contact</a></li>
+    </ul>
+    <p>
+      Or call us on <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a> and we will point you at the right thing.
+    </p>
+  </main>
+</Base>
+
+<style>
+  .notfound .nearby {
+    justify-content: center;
+  }
+  .notfound p a {
+    color: var(--accent-ink);
+  }
+</style>

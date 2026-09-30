@@ -1,0 +1,94 @@
+---
+/**
+ * Areas hub. The parent of every local page, and the page that makes the
+ * geographic structure of the site legible to both crawlers and customers.
+ */
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { areasByTier, areas } from '../../data/areas';
+import { site } from '../../data/site';
+
+const crumbs = [{ name: 'Areas' }];
+
+const tierBlurb: Record<1 | 2 | 3, string> = {
+  1: 'Our own postcode. The studio is on Lower Road, so these are a walk away and site visits or photography can happen the same week.',
+  2: 'A short hop on the Overground, the Jubilee line or the DLR. Close enough for regular visits and shoots.',
+  3: 'Further out, but places where we already have clients and know the ground.',
+};
+---
+
+<Base
+  title="Areas We Cover in South East London"
+  description={`Web design, local SEO and photography across ${areas.length} areas of south east London — Surrey Quays, Rotherhithe, Canada Water, Bermondsey, Deptford and more.`}
+  crumbs={crumbs}
+>
+  <Breadcrumbs crumbs={crumbs} />
+
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">Where we work</p>
+        <h1>Areas we cover</h1>
+        <p class="lede">
+          We are based at {site.address.street} in Surrey Quays, and most of our clients are within a few miles of
+          the studio. Every area below has its own page, written about that area rather than copied from the last
+          one — so you can check whether we actually know the ground before you call.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/contact/">Start a project</a>
+          <a class="btn btn-ghost" href={`tel:${site.phone}`}>Call {site.phoneDisplay}</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        {
+          areasByTier.map((group) => (
+            <div class="area-tier">
+              <h2>{group.label}</h2>
+              <p>{tierBlurb[group.tier]}</p>
+              <div class="area-grid">
+                {group.areas.map((area) => (
+                  <a class="area-card" href={`/areas/${area.slug}/`}>
+                    <span class="postcode">{area.postcodes.join(' · ')}</span>
+                    <h3>{area.name}</h3>
+                    <p>{area.character}</p>
+                    <span class="go">Web design in {area.name} &rarr;</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Not on the list?</h2>
+          <p>
+            The list is where we can genuinely claim local knowledge, not the limit of where we work. Design,
+            development and marketing are priced the same wherever you are.
+          </p>
+        </div>
+        <div class="prose">
+          <p>
+            We only charge for travel if a job needs repeated on-site shoots. If you are outside south east London
+            and the work is mostly website and marketing, distance makes no practical difference — Alterique, one of
+            the businesses on our <a href="/work/">work page</a>, is in Walthamstow.
+          </p>
+          <p>
+            Call <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a> or
+            <a href={`mailto:${site.email}`}>email us</a> and we will tell you honestly whether we are the right
+            people for it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <CtaBand />
+  </main>
+</Base>

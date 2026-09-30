@@ -1,0 +1,86 @@
+/* ---------- tokens: light = direction B (frosted glass), dark = direction A (chrome Q) ---------- */
+:root {
+  --bg: #FAFAF8;
+  --bg-alt: #EDEDEA;
+  --ink: #11110F;
+  --ink-soft: #3A3A36;
+  --muted: #5A5A55;
+  --line: rgba(17, 17, 15, 0.10);
+  --line-strong: rgba(17, 17, 15, 0.22);
+  --card: #FFFFFF;
+  --card-art: #F3F3F0;
+  --glass: rgba(255, 255, 255, 0.72);
+  --field-bg: #FFFFFF;
+  --field-border: #8A8A84;
+  --accent: #E2161F;
+  --accent-hover: #C0121A;
+  --accent-ink: #B0111A;
+  --on-accent: #FFFFFF;
+  --glow: rgba(226, 22, 31, 0.07);
+  --hero-glow: rgba(226, 22, 31, 0);
+  --screen: #E4E4DF;
+  --screen-ink: #5A5A55;
+  --bezel: #11110F;
+  --shadow: 0 30px 60px -28px rgba(17, 17, 15, 0.30);
+  --nav-shadow: 0 12px 32px -12px rgba(17, 17, 15, 0.18);
+  --show-on-light: block;
+  --show-on-dark: none;
+  --footer-bg: #11110F;
+  --footer-ink: #FAFAF8;
+  --footer-muted: #B8B8B2;
+  --footer-line: rgba(250, 250, 248, 0.12);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11110F;
+    --bg-alt: #161614;
+    --ink: #FAFAF8;
+    --ink-soft: #D6D6D0;
+    --muted: #B8B8B2;
+    --line: rgba(250, 250, 248, 0.10);
+    --line-strong: rgba(250, 250, 248, 0.24);
+    --card: #1A1A18;
+    --card-art: #141412;
+    --glass: rgba(26, 26, 24, 0.72);
+    --field-bg: #11110F;
+    --field-border: #7A7A74;
+    --accent-ink: #FF4A50;
+    --glow: rgba(226, 22, 31, 0.22);
+    --hero-glow: rgba(226, 22, 31, 0.22);
+    --screen: #1F1F1C;
+    --screen-ink: #B8B8B2;
+    --bezel: #2B2B28;
+    --shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.75);
+    --nav-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+    --show-on-light: none;
+    --show-on-dark: block;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11110F;
+  --bg-alt: #161614;
+  --ink: #FAFAF8;
+  --ink-soft: #D6D6D0;
+  --muted: #B8B8B2;
+  --line: rgba(250, 250, 248, 0.10);
+  --line-strong: rgba(250, 250, 248, 0.24);
+  --card: #1A1A18;
+  --card-art: #141412;
+  --glass: rgba(26, 26, 24, 0.72);
+  --field-bg: #11110F;
+  --field-border: #7A7A74;
+  --accent-ink: #FF4A50;
+  --glow: rgba(226, 22, 31, 0.22);
+  --hero-glow: rgba(226, 22, 31, 0.22);
+  --screen: #1F1F1C;
+  --screen-ink: #B8B8B2;
+  --bezel: #2B2B28;
+  --shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.75);
+  --nav-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+  --show-on-light: none;
+  --show-on-dark: block;
+  color-scheme: dark;
+}
+

@@ -1,0 +1,78 @@
+---
+/**
+ * Site footer.
+ *
+ * Beyond the sign-off, this is the site's main internal-linking surface: it
+ * puts every service and every priority area within one click of any page,
+ * which is how ranking signal reaches the deeper local pages.
+ */
+import { Image } from 'astro:assets';
+import { site } from '../data/site';
+import { services } from '../data/services';
+import { areas } from '../data/areas';
+import logoFooter from '../assets/logo-footer.webp';
+
+/** Home turf and near neighbours, linked from every page. */
+const footerAreas = areas.filter((a) => a.tier <= 2).slice(0, 8);
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <p class="signoff"><span>Build. Grow.</span><span class="accent">Elevate.</span></p>
+      <a class="btn btn-primary" href="/contact/">Start a project</a>
+    </div>
+
+    <div class="footer-cols">
+      <div>
+        <h3>Services</h3>
+        <ul>
+          {services.map((s) => <li><a href={`/services/${s.slug}/`}>{s.name}</a></li>)}
+          <li><a href="/pricing/">Pricing</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Areas we cover</h3>
+        <ul class="compact">
+          {footerAreas.map((a) => <li><a href={`/areas/${a.slug}/`}>{a.name}</a></li>)}
+          <li><a href="/areas/">All areas</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="/work/">Work</a></li>
+          <li><a href="/about/">About us</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href={site.sister.url} rel="noopener">Surrey Quays Photo Studio</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Say hello</h3>
+        <ul>
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li><a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></li>
+          <li><a href={site.instagram} target="_blank" rel="noopener noreferrer">{site.instagramHandle}</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-base">
+      <Image src={logoFooter} width={280} alt={`${site.name} logo`} loading="lazy" />
+      <a class="footer-legal" href="/privacy/">Privacy notice</a>
+      <span>&copy; {year} {site.name}</span>
+    </div>
+
+    <!-- Address in the footer of every page: consistent, crawlable NAP is a
+         local ranking signal, and it is also just what customers look for. -->
+    <p class="footer-company">
+      {site.name} is a trading name of {site.legalName}, registered in England and Wales, company number {
+        site.companyNumber
+      }. Registered office: {site.address.street}, {site.address.locality} {site.address.postcode}.
+    </p>
+  </div>
+</footer>

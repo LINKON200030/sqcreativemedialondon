@@ -1,0 +1,77 @@
+# CLAUDE.md
+
+Astro 7 static site for SQ Creative Media London — a web design, marketing and
+photography agency at 142 Lower Road, Surrey Quays, SE16. Built for local search.
+
+Read `README.md` first; it covers the stack, the layout and the SEO strategy. This file
+covers the things that are easy to break.
+
+## Commands
+
+```bash
+npm run dev      # astro dev — use `astro dev --background` for a long-running server
+npm run build    # static output to dist/
+npm run check    # TypeScript + Astro diagnostics; must stay at 0 errors
+npm run audit    # build, then scripts/audit-seo.mjs — run before every deploy
+```
+
+## Rules that matter
+
+**Content is data.** Page content lives in `src/data/*.ts`, not in the templates. To
+change a service page edit `services.ts`; to add an area edit `areas.ts`. The routes,
+sitemap, schema, footer links and internal linking all derive from those files.
+
+**NAP is sacred.** The name, address and phone number in `src/data/site.ts` must match the
+Google Business Profile exactly, character for character. Inconsistent NAP costs local
+ranking. Never hardcode the phone number, email or address in a template — import from
+`site.ts`.
+
+**One domain constant.** `SITE_URL` in `src/data/site.ts` feeds `astro.config.mjs`, every
+canonical, the sitemap and all structured data. Change it in one place only.
+
+**Structured data must describe what the page shows.** `faqPage()` in `src/lib/schema.ts`
+must be passed the same array the `<Faq>` component renders. Marking up text the visitor
+cannot see is a guidelines violation.
+
+**Area pages must be genuinely different.** Every field in an `Area` entry exists to make
+its page unlike the others — real stations, streets, landmarks, local character, its own
+FAQs. A set of templated near-identical local pages is a doorway and gets demoted. If you
+cannot write something true about a place, do not add it.
+
+**Keep the meta description under ~155 characters** or Google truncates it. `npm run
+audit` will tell you.
+
+**Never import Three.js.** The hero model is `public/q3d.js`, a pre-bundled copy loaded on
+demand by `src/components/HeroStage.astro`. It is deliberately not an npm dependency so it
+cannot end up in the critical path. If you rewrite the scene, keep it out of the main
+bundle and keep the loading conditions in `HeroStage.astro`.
+
+**Astro 7 specifics.** `compressHTML: true` is set in `astro.config.mjs` on purpose —
+the v7 default (`'jsx'`) strips whitespace between inline elements and silently eats the
+space in markup like `<strong>a</strong> <em>b</em>`. The v7 Rust compiler also rejects
+unclosed tags and invalid nesting that older versions tolerated.
+
+**`trailingSlash: 'always'`.** Every internal link ends in `/`. Links without it will
+redirect, which wastes crawl budget and splits signals.
+
+## CSS
+
+`src/styles/main.css` imports the rest in a deliberate order. `tokens.css`, `base-core.css`,
+`components.css` and `responsive.css` are ported verbatim from the original single-file
+build — keep them that way, and put changes to those components in `pages.css` under a
+comment saying why, so the port stays traceable.
+
+Everything is built from the tokens in `tokens.css`, so light and dark themes come free.
+Do not introduce raw colour values.
+
+Grid tracks use `minmax(min(Npx, 100%), 1fr)` rather than `minmax(Npx, 1fr)` — the plain
+form keeps its minimum even when the container is narrower and overflows a 320 px phone.
+
+## Placeholders still in the repo
+
+- **Prices** in `src/pages/pricing.astro` and the FAQs in `src/data/services.ts` are
+  plausible market rates, not confirmed. They must agree with each other.
+- **`site.geo`** is an approximation of 142 Lower Road; it should match the Google
+  Business Profile pin.
+- **`PUBLIC_FORM_ENDPOINT`** is unset, so the enquiry form falls back to showing the phone
+  number. Whichever provider is chosen must be named in `src/pages/privacy.astro`.

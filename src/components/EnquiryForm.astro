@@ -1,0 +1,235 @@
+---
+/**
+ * Enquiry form.
+ *
+ * In the original build this was a demo: it validated, then told the visitor to
+ * send an email instead. It now actually submits, and it does so without
+ * requiring JavaScript — the form is a real POST to whatever endpoint is
+ * configured, and the script only upgrades it to submit in place.
+ *
+ * Set the endpoint once, in a .env file at the project root:
+ *
+ *   PUBLIC_FORM_ENDPOINT=https://...
+ *
+ * Any service that accepts a normal form POST works — Formspree, Web3Forms,
+ * Netlify Forms, a Cloudflare Worker, your own handler. If the variable is not
+ * set, the form falls back to the original behaviour and shows the phone number
+ * and email address, so it degrades to something useful rather than pretending
+ * to have sent.
+ *
+ * The "what do you need" chips are real checkboxes. Previously they were
+ * buttons with aria-pressed, which looked right but meant the visitor's
+ * selection was never included in the submission.
+ */
+import { site } from '../data/site';
+import { services } from '../data/services';
+
+interface Props {
+  /** Pre-ticks a service, e.g. when the form sits on a service page. */
+  preselect?: string;
+  /** Recorded in a hidden field so you can see which page produced the lead. */
+  source?: string;
+}
+
+const { preselect, source = Astro.url.pathname } = Astro.props;
+
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+---
+
+<form
+  class="enquiry"
+  id="enquiry"
+  method="POST"
+  action={endpoint || undefined}
+  novalidate
+  data-endpoint={endpoint}
+>
+  <div class="field-row">
+    <div class="field">
+      <label for="f-name">Your name</label>
+      <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-error" />
+      <p class="field-error" id="f-name-error" hidden>Add your name so we know who to reply to.</p>
+    </div>
+    <div class="field">
+      <label for="f-email">Email</label>
+      <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="f-email-error" />
+      <p class="field-error" id="f-email-error" hidden>Enter an email address, like name@business.co.uk.</p>
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label for="f-business">Business name</label>
+      <input id="f-business" name="business" type="text" autocomplete="organization" />
+    </div>
+    <div class="field">
+      <label for="f-phone">Phone (optional)</label>
+      <input id="f-phone" name="phone" type="tel" autocomplete="tel" />
+    </div>
+  </div>
+
+  <fieldset class="needs">
+    <legend>What do you need?</legend>
+    <div class="chips">
+      {
+        services.map((service) => (
+          <label class="chip">
+            <input
+              type="checkbox"
+              name="needs"
+              value={service.name}
+              checked={preselect === service.slug}
+            />
+            <span>{service.name}</span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  <div class="field">
+    <label for="f-message">Tell us about your project</label>
+    <textarea id="f-message" name="message" rows="5"></textarea>
+  </div>
+
+  <!-- Spam trap. Hidden from people and from screen readers; bots fill it in
+       and the submission is dropped. Cheaper and less annoying than a CAPTCHA. -->
+  <div class="honeypot" aria-hidden="true">
+    <label for="f-website">Website</label>
+    <input id="f-website" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <input type="hidden" name="_source" value={source} />
+  <input type="hidden" name="_subject" value="New enquiry from sqcreativemedialondon.co.uk" />
+
+  <p class="form-privacy">
+    We only use these details to reply to your enquiry. <a href="/privacy/">Read our privacy notice</a>.
+  </p>
+
+  <div class="form-foot">
+    <button class="btn btn-primary" type="submit" id="f-submit">Send enquiry</button>
+    <p class="form-status" id="f-status" role="status" aria-live="polite"></p>
+  </div>
+</form>
+
+<style>
+  /* Chips are checkboxes now. The input stays in the accessibility tree and
+     remains focusable, it is just not painted. */
+  .chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    user-select: none;
+  }
+  .chip input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .chip:has(input:checked) {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+  .chip:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .field input[aria-invalid='true'],
+  .field textarea[aria-invalid='true'] {
+    border-color: var(--accent);
+  }
+</style>
+
+<script is:inline define:vars={{ contactPhone: site.phoneDisplay, contactEmail: site.email }}>
+  (function () {
+    const form = document.getElementById('enquiry');
+    if (!form) return;
+
+    const status = document.getElementById('f-status');
+    const submitBtn = document.getElementById('f-submit');
+    const nameField = document.getElementById('f-name');
+    const emailField = document.getElementById('f-email');
+    const endpoint = form.dataset.endpoint;
+
+    const fallback = 'Please call ' + contactPhone + ' or email ' + contactEmail + '.';
+
+    function setError(field, errorId, ok) {
+      const error = document.getElementById(errorId);
+      if (error) error.hidden = ok;
+      field.setAttribute('aria-invalid', String(!ok));
+      return ok;
+    }
+
+    function validate() {
+      const nameOk = setError(nameField, 'f-name-error', nameField.value.trim().length > 0);
+      const emailOk = setError(
+        emailField,
+        'f-email-error',
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value.trim()),
+      );
+      if (!nameOk) {
+        nameField.focus();
+        return false;
+      }
+      if (!emailOk) {
+        emailField.focus();
+        return false;
+      }
+      return true;
+    }
+
+    form.addEventListener('submit', async function (e) {
+      // Validate first, whatever happens next.
+      if (!validate()) {
+        e.preventDefault();
+        status.textContent = '';
+        return;
+      }
+
+      // With no endpoint configured there is nowhere to send this, so say so
+      // plainly rather than failing silently.
+      if (!endpoint) {
+        e.preventDefault();
+        status.textContent = 'This form is not connected yet. ' + fallback;
+        return;
+      }
+
+      // Submit in place so the visitor keeps their scroll position, and their
+      // answers, if something goes wrong.
+      e.preventDefault();
+      submitBtn.disabled = true;
+      status.textContent = 'Sending…';
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (!response.ok) throw new Error('Request failed with status ' + response.status);
+        form.reset();
+        status.textContent = 'Thank you — we have got it and will reply within one working day.';
+      } catch (err) {
+        // Never lose the enquiry: fall back to the phone number.
+        status.textContent = 'Something went wrong sending that. ' + fallback;
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  })();
+</script>

@@ -1,0 +1,85 @@
+---
+/**
+ * Work page.
+ *
+ * Named clients with live URLs are the strongest trust signal on the site and
+ * the hardest thing for a non-local competitor to match. The expanded variant
+ * of CaseStudies shows the full write-up and the outcomes.
+ */
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CaseStudies from '../../components/CaseStudies.astro';
+import Process from '../../components/Process.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { caseStudies } from '../../data/work';
+import { site } from '../../data/site';
+
+const crumbs = [{ name: 'Work' }];
+---
+
+<Base
+  title="Our Work"
+  description="Websites and systems built for London businesses — a photo studio on Lower Road SE16, a tailoring business in Walthamstow, and a custom management system."
+  crumbs={crumbs}
+>
+  <Breadcrumbs crumbs={crumbs} />
+
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">Work</p>
+        <h1>Live sites, named clients, real local businesses</h1>
+        <p class="lede">
+          Everything below is live and you can visit it. We name the businesses and link to them because that is the
+          only kind of portfolio worth anything — and because most agencies pitching for work in SE16 cannot show
+          you a single client in the postcode.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/contact/">Start a project</a>
+          <a class="btn btn-ghost" href="/pricing/">See pricing</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <CaseStudies
+          expanded
+          heading={`${caseStudies.length} projects, start to finish`}
+          intro="What the business needed, what we built, and what changed as a result."
+        />
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <Process />
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>What we will not show you</h2>
+          <p>A note on the portfolio, because it is worth being straight about this.</p>
+        </div>
+        <div class="prose">
+          <p>
+            We are a young agency. There are three projects on this page, not thirty, and we would rather show you
+            three real ones than pad the list with template sites and stock mockups. Two of them are live and you
+            can click through to them right now. The third is internal software, shown with sample data, because
+            real customer records are not ours to publish.
+          </p>
+          <p>
+            If you want to talk to a client before you commit, ask. We will put you in touch with {
+              site.sister.name
+            } on Lower Road, or with the studio in Walthamstow, and you can ask them what we were like to work with
+            rather than taking our word for it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <CtaBand />
+  </main>
+</Base>

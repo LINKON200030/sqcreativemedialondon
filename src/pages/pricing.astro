@@ -1,0 +1,254 @@
+---
+/**
+ * Pricing page.
+ *
+ * ⚠️  THE NUMBERS ON THIS PAGE ARE PLACEHOLDERS — REVIEW BEFORE LAUNCH.
+ *
+ * They are set at plausible south-east-London market rates and they agree with
+ * the figures quoted in the service-page FAQs (src/data/services.ts), so if you
+ * change one, change the other. Search for "£" across src/ to find them all.
+ *
+ * Why publish prices at all: "how much does a website cost" is one of the
+ * highest-volume commercial queries in this trade, and the agencies ranking
+ * locally either publish a number or waste both sides' time. Being the page
+ * that answers it wins the search and filters out enquiries you would have
+ * turned down anyway.
+ */
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site } from '../data/site';
+import { faqPage } from '../lib/schema';
+
+const crumbs = [{ name: 'Pricing' }];
+
+const websiteTiers = [
+  {
+    tier: 'Starter',
+    name: 'One-page site',
+    amount: 'from £1,200',
+    note: 'One-off',
+    body: 'For a business that mainly needs to be findable, with a phone number and an enquiry form.',
+    features: [
+      'One page, designed around your business',
+      'Enquiry form and click-to-call',
+      'Google Business Profile set up properly',
+      'SEO basics and Search Console connected',
+      'Hosting for the first year included',
+    ],
+  },
+  {
+    tier: 'Most popular',
+    name: 'Small business site',
+    amount: 'from £2,400',
+    note: 'One-off',
+    body: 'Four to eight pages, a page per service, and content written for the searches you want to win.',
+    features: [
+      'Up to 8 pages, mobile-first',
+      'A page per service, each optimised',
+      'Online booking or payments if you need them',
+      'Photography session included',
+      'Local SEO set-up and structured data',
+      'Hosting and care for the first year',
+    ],
+    featured: true,
+  },
+  {
+    tier: 'Larger builds',
+    name: 'Custom',
+    amount: 'from £4,000',
+    note: 'Quoted per project',
+    body: 'Shops, booking systems, client portals, or software built around a process that off-the-shelf tools do not fit.',
+    features: [
+      'Ecommerce and online ordering',
+      'Booking, deposits and Stripe payments',
+      'Client logins and private galleries',
+      'Custom systems — see SQ Management on our work page',
+      'Ongoing development retainer available',
+    ],
+  },
+];
+
+const retainers = [
+  {
+    tier: 'Local',
+    name: 'Local SEO',
+    amount: '£350',
+    note: 'per month · 30 days notice',
+    body: 'The groundwork that makes you findable in your own postcode.',
+    features: [
+      'Google Business Profile managed',
+      'Local search pages built and improved',
+      'Review generation and responses',
+      'Monthly plain-English report',
+    ],
+  },
+  {
+    tier: 'Growth',
+    name: 'Marketing and content',
+    amount: '£750',
+    note: 'per month · 30 days notice',
+    body: 'Local SEO plus social media and the content to feed it.',
+    features: [
+      'Everything in Local SEO',
+      'Instagram and Facebook managed',
+      'A content shoot every month',
+      'Ad campaigns managed (ad spend separate)',
+      'Monthly call to review the numbers',
+    ],
+    featured: true,
+  },
+  {
+    tier: 'Creative',
+    name: 'Photography',
+    amount: 'from £280',
+    note: 'per shoot',
+    body: 'A half-day in our studio on Lower Road or at your premises.',
+    features: [
+      'Two to three hours of shooting',
+      'Edited files sized for web, print and social',
+      'Full commercial licence, no expiry',
+      'Video and reels quoted alongside',
+    ],
+  },
+];
+
+const faqs = [
+  {
+    q: 'Why publish prices when most agencies do not?',
+    a: 'Because the first thing you want to know is whether we are in your range, and a form that says "request a quote" wastes a week finding out. These are honest starting points. The quote you get is fixed and comes before any work starts.',
+  },
+  {
+    q: 'What makes a project cost more than the starting price?',
+    a: 'Page count, online payments or booking, ecommerce, anything needing a login, and how much content needs writing or photographing from scratch. We tell you which of those apply to you on the first call.',
+  },
+  {
+    q: 'Do you take payment in stages?',
+    a: 'Yes. Typically half to start and half on launch, and for larger builds we split it across agreed milestones. Marketing is billed monthly in advance.',
+  },
+  {
+    q: 'What does hosting cost after the first year?',
+    a: 'From £15 a month, which covers hosting, backups, monitoring, security updates and small content changes. You can also take the site elsewhere — you own it.',
+  },
+  {
+    q: 'Is there a contract?',
+    a: 'Website builds are a fixed-price project with a written scope. Marketing runs month to month with thirty days notice. There is no minimum term and no exit fee.',
+  },
+  {
+    q: 'Do you charge extra to travel to me?',
+    a: 'Not for a normal project. Design, development and marketing are priced the same wherever you are. We only factor in travel if a job needs repeated on-site shoots a long way from SE16.',
+  },
+];
+---
+
+<Base
+  title="Pricing"
+  description="What a website and marketing actually cost. Websites from £1,200, local SEO from £350 a month, photography from £280. Fixed quotes, no long contracts."
+  crumbs={crumbs}
+  schemas={[faqPage(faqs)]}
+>
+  <Breadcrumbs crumbs={crumbs} />
+
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">Pricing</p>
+        <h1>What this actually costs</h1>
+        <p class="lede">
+          Starting prices, published, so you can tell in thirty seconds whether we are in your range. Every project
+          is quoted properly before it starts, and the quote is fixed — if we have underestimated it, that is our
+          problem rather than an extra invoice.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/contact/">Get a fixed quote</a>
+          <a class="btn btn-ghost" href={`tel:${site.phone}`}>Call {site.phoneDisplay}</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Websites</h2>
+          <p>One-off projects. You own everything at the end of it.</p>
+        </div>
+        <div class="price-grid">
+          {
+            websiteTiers.map((t) => (
+              <article class:list={['price-card', t.featured && 'is-featured']}>
+                <span class="tier">{t.tier}</span>
+                <h3>{t.name}</h3>
+                <p class="amount">{t.amount}<small>{t.note}</small></p>
+                <p>{t.body}</p>
+                <ul>{t.features.map((f) => <li>{f}</li>)}</ul>
+                <a class="btn btn-primary" href="/contact/">Get a quote</a>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Marketing and creative</h2>
+          <p>Month to month, thirty days notice, cancel whenever it stops earning its cost.</p>
+        </div>
+        <div class="price-grid">
+          {
+            retainers.map((t) => (
+              <article class:list={['price-card', t.featured && 'is-featured']}>
+                <span class="tier">{t.tier}</span>
+                <h3>{t.name}</h3>
+                <p class="amount">{t.amount}<small>{t.note}</small></p>
+                <p>{t.body}</p>
+                <ul>{t.features.map((f) => <li>{f}</li>)}</ul>
+                <a class="btn btn-primary" href="/contact/">Get started</a>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>What is always included</h2>
+          <p>Not upsells. These are part of the job.</p>
+        </div>
+        <ul class="trust-row">
+          <li>
+            <strong>A fixed quote first</strong>
+            <span>A written scope, a timeline and a price before any work starts.</span>
+          </li>
+          <li>
+            <strong>You own it</strong>
+            <span>Design, content, domain and accounts. Take it elsewhere whenever you like.</span>
+          </li>
+          <li>
+            <strong>One point of contact</strong>
+            <span>The people doing the work. No account manager in between.</span>
+          </li>
+          <li>
+            <strong>An honest no</strong>
+            <span>If something will not pay for itself, we say so before you buy it.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <Faq faqs={faqs} heading="Questions about price" intro="The things people ask before committing." />
+      </div>
+    </section>
+
+    <CtaBand
+      heading="Want a number for your project?"
+      body="Tell us what you need. You will get a plan and a fixed price, usually within one working day, and there is no charge for the conversation."
+    />
+  </main>
+</Base>

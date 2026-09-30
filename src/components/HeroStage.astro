@@ -1,0 +1,99 @@
+---
+/**
+ * The draggable 3D "Q" in the homepage hero.
+ *
+ * In the original build, 480 kB of bundled Three.js sat inline in the HTML and
+ * had to be downloaded and parsed before the page finished loading. Here the
+ * same bundle is a separate file in public/ that is fetched only when all of
+ * these are true:
+ *
+ *   - the stage has scrolled into view
+ *   - the browser is idle, so it never competes with the largest contentful paint
+ *   - the visitor has not asked for reduced motion
+ *   - the visitor does not have Save-Data switched on
+ *   - the viewport is wide enough to be worth it
+ *
+ * When it does not load — or WebGL is unavailable — the pre-rendered stills stay
+ * in place and nothing looks broken. That is why the fallback images are eager:
+ * one of them is the largest contentful paint on the homepage.
+ */
+import { Image } from 'astro:assets';
+import { heroImages } from '../lib/images';
+
+/**
+ * Below this width the still image is used instead. Phones are where Core Web
+ * Vitals are measured and where the data costs the visitor real money, and the
+ * stills are a rendering of the same model.
+ */
+const MIN_WIDTH_FOR_3D = 700;
+---
+
+<div
+  class="hero-stage"
+  role="img"
+  aria-label="3D model of the Q from the SQ logo, which you can drag to rotate"
+  data-min-width={MIN_WIDTH_FOR_3D}
+>
+  <Image
+    class="stage-fallback on-dark"
+    src={heroImages.dark}
+    width={1000}
+    alt=""
+    loading="eager"
+    fetchpriority="high"
+  />
+  <Image
+    class="stage-fallback on-light"
+    src={heroImages.light}
+    width={900}
+    alt=""
+    loading="eager"
+    fetchpriority="high"
+  />
+  <canvas id="q3d"></canvas>
+  <p class="stage-hint">Drag to rotate</p>
+</div>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('.hero-stage');
+
+  if (stage) {
+    const minWidth = Number(stage.dataset.minWidth ?? 700);
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // `connection` is not in every browser's lib.dom, hence the cast.
+    const saveData = Boolean((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData);
+
+    const worthLoading = !reducedMotion && !saveData && window.innerWidth >= minWidth;
+
+    if (worthLoading) {
+      const idle: (cb: () => void) => void =
+        'requestIdleCallback' in window
+          ? (cb) => (window as Window & { requestIdleCallback: (c: () => void) => void }).requestIdleCallback(cb)
+          : (cb) => window.setTimeout(cb, 200);
+
+      const load = () => {
+        const script = document.createElement('script');
+        script.src = '/q3d.js';
+        script.defer = true;
+        document.body.appendChild(script);
+
+        // If the scene never reports itself live — no WebGL, a driver problem,
+        // a blocked request — leave the stills alone and stop waiting.
+        window.setTimeout(() => {
+          if (!(window as Window & { __q3dLive?: boolean }).__q3dLive) stage.classList.add('no-webgl');
+        }, 8000);
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            observer.disconnect();
+            idle(load);
+          }
+        },
+        { rootMargin: '200px' },
+      );
+      observer.observe(stage);
+    }
+  }
+</script>

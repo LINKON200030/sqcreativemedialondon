@@ -1,0 +1,128 @@
+---
+/**
+ * Case studies in tilted device mockups, ported from the original design.
+ *
+ * The browser and phone frames are CSS — the image inside is the only asset —
+ * so they cost nothing and stay sharp at any size.
+ */
+import { Image } from 'astro:assets';
+import { caseStudies, type CaseStudy } from '../data/work';
+import { caseImages } from '../lib/images';
+
+interface Props {
+  heading?: string;
+  intro?: string;
+  /** Override which case studies to show, and in what order. */
+  items?: CaseStudy[];
+  /** Renders the fuller description used on the work page. */
+  expanded?: boolean;
+}
+
+const {
+  heading = 'Recent work',
+  intro = 'Websites and systems we have built for London businesses, from Rotherhithe to Walthamstow.',
+  items = caseStudies,
+  expanded = false,
+} = Astro.props;
+---
+
+<div class="section-head">
+  <h2>{heading}</h2>
+  <p>{intro}</p>
+</div>
+
+<div class="cases">
+  {
+    items.map((item, i) => (
+      <article class="case">
+        <div class="case-media">
+          {item.device === 'browser' ? (
+            <div class="device device-browser">
+              <div class="mock-bar" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+                <span>{item.chrome}</span>
+              </div>
+              <Image
+                src={caseImages[item.slug]}
+                width={1200}
+                alt={`The ${item.name} website`}
+                loading={i === 0 ? 'eager' : 'lazy'}
+              />
+            </div>
+          ) : (
+            <div class="device device-phone">
+              <Image
+                src={caseImages[item.slug]}
+                width={580}
+                alt={`The ${item.name} website on a phone`}
+                loading="lazy"
+              />
+            </div>
+          )}
+        </div>
+
+        <div class="case-body">
+          <p class="case-where">{item.where}</p>
+          <h3>{item.name}</h3>
+
+          {expanded ? (
+            item.detail.map((para) => <p class="case-text">{para}</p>)
+          ) : (
+            <p class="case-text">{item.summary}</p>
+          )}
+
+          {expanded && (
+            <ul class="case-outcomes">
+              {item.outcomes.map((o) => (
+                <li>{o}</li>
+              ))}
+            </ul>
+          )}
+
+          <ul class="case-tags" aria-label="What we did">
+            {item.tags.map((t) => (
+              <li>{t}</li>
+            ))}
+          </ul>
+
+          {item.url && (
+            <a class="case-link" href={item.url} target="_blank" rel="noopener noreferrer">
+              Visit the live site
+            </a>
+          )}
+          {item.note && <p class="case-note">{item.note}</p>}
+        </div>
+      </article>
+    ))
+  }
+</div>
+
+<style>
+  .case-outcomes {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 9px;
+  }
+  .case-outcomes li {
+    position: relative;
+    padding-left: 24px;
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .case-outcomes li::before {
+    content: '';
+    position: absolute;
+    left: 1px;
+    top: 7px;
+    width: 10px;
+    height: 5px;
+    border-left: 2px solid var(--accent);
+    border-bottom: 2px solid var(--accent);
+    transform: rotate(-45deg);
+  }
+</style>

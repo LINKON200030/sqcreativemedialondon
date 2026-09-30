@@ -1,0 +1,269 @@
+---
+/**
+ * Privacy notice, ported from the original standalone page and brought inside
+ * the main layout so it has the site's navigation and footer.
+ *
+ * Two substantive changes from the original, both because the enquiry form now
+ * actually sends rather than being a demo:
+ *
+ *   1. "Who we share it with" names the form processor. If you set
+ *      PUBLIC_FORM_ENDPOINT to a third-party service, that service receives
+ *      everything typed into the form and must be disclosed here. Name the
+ *      provider you actually use.
+ *   2. The cookies section mentions the spam-trap field and localStorage theme
+ *      preference explicitly.
+ *
+ * ⚠️  Bump LAST_UPDATED whenever you change the substance of this page, and have
+ *     it reviewed before launch — this is a legal document, not marketing copy.
+ */
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { site } from '../data/site';
+
+const LAST_UPDATED = '30 September 2026';
+
+const crumbs = [{ name: 'Privacy notice' }];
+
+const lawfulBasis = [
+  {
+    use: 'Replying to your enquiry and preparing a quote',
+    basis:
+      'Steps you ask us to take before a contract, and our legitimate interest in replying to people who contact us',
+  },
+  { use: 'Delivering the work you hire us for', basis: 'Performing our contract with you' },
+  { use: 'Invoices, accounts and tax records', basis: 'Legal obligation' },
+  { use: 'Keeping this website secure', basis: 'Legitimate interests' },
+  {
+    use: 'Sending you news or offers',
+    basis: 'Your consent, only if you ask to receive them. Enquiries are never added to a mailing list.',
+  },
+];
+---
+
+<Base
+  title="Privacy Notice"
+  description="What personal information SQ Creative Media London collects, why we need it, how long we keep it and the rights you have."
+  crumbs={crumbs}
+>
+  <Breadcrumbs crumbs={crumbs} />
+
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <h1>Privacy notice</h1>
+        <p class="updated">Last updated {LAST_UPDATED}</p>
+        <p class="lede">
+          This notice explains what personal information {site.name} collects, why we need it, how long we keep it
+          and the rights you have. It covers this website, enquiries and the work we do for clients.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="prose">
+          <h2 id="who">Who we are</h2>
+          <p>
+            {site.name} is a trading name of {site.legalName}, registered in England and Wales, company number {
+              site.companyNumber
+            }. Our registered office is {site.address.street}, {site.address.locality} {site.address.postcode}.
+          </p>
+          <p>
+            We are the controller of the personal information described in this notice. That means we decide how it
+            is used and we are responsible for looking after it.
+          </p>
+          <div class="contact-box">
+            <span>Questions about your information:</span>
+            <span><a href={`mailto:${site.email}`}>{site.email}</a></span>
+            <span><a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></span>
+          </div>
+
+          <h2 id="collect">What we collect</h2>
+          <ul>
+            <li>
+              <strong>When you send an enquiry:</strong> your name, email address, business name, phone number if you
+              give it, the services you choose and your message.
+            </li>
+            <li>
+              <strong>When you email, call or message us on Instagram:</strong> your contact details and anything you
+              tell us.
+            </li>
+            <li>
+              <strong>When you become a client:</strong> contact details for you and your team, project details,
+              contracts, invoices and payment records. We never store card details — card payments are handled by our
+              payment provider.
+            </li>
+            <li>
+              <strong>When you visit this website:</strong> our hosting provider keeps technical logs, such as IP
+              address and browser type, to keep the site secure and working.
+            </li>
+          </ul>
+          <p>We do not use analytics, advertising trackers or social media plugins on this website.</p>
+
+          <h2 id="basis">How we use it, and our lawful basis</h2>
+          <p>
+            UK data protection law says we must have a lawful basis for each way we use personal information. These
+            are ours:
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">What we use it for</th>
+                  <th scope="col">Lawful basis</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  lawfulBasis.map((row) => (
+                    <tr>
+                      <td>{row.use}</td>
+                      <td>{row.basis}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="share">Who we share it with</h2>
+          <p>
+            We only share information with providers who help us run the business, such as our website host, our
+            form processor, our email provider, our accountant and our payment provider. They act on our
+            instructions and must keep your information secure.
+          </p>
+          <p>
+            When you submit the enquiry form on this website, the details you type are passed to the form processing
+            service that delivers it to our inbox. That service receives your name, email address, business name,
+            phone number, the services you selected and your message.
+          </p>
+          <p>
+            We may share information with authorities such as HMRC when the law requires it. We never sell your
+            information.
+          </p>
+
+          <h2 id="transfers">Storage outside the UK</h2>
+          <p>
+            Some of our providers may store information outside the UK. When they do, we make sure it is protected by
+            safeguards approved under UK law, such as UK adequacy regulations or the International Data Transfer
+            Agreement.
+          </p>
+
+          <h2 id="retention">How long we keep it</h2>
+          <ul>
+            <li>Enquiries that do not lead to work: deleted within 12 months.</li>
+            <li>
+              Client records, contracts and invoices: 6 years from the end of the financial year they relate to,
+              because UK tax law requires it.
+            </li>
+            <li>Website logs: kept by our host only as long as needed to keep the site secure.</li>
+          </ul>
+
+          <h2 id="cookies">Cookies and storage</h2>
+          <p>This website does not set cookies, so you will not see a cookie banner.</p>
+          <p>
+            If you choose the dark or light theme, your browser remembers that choice on your device using local
+            storage. It is never sent to us, and you can clear it in your browser settings at any time.
+          </p>
+          <p>
+            The enquiry form includes a hidden field that people never see and never fill in. It is there to catch
+            automated spam, and we discard anything that completes it.
+          </p>
+          <p>
+            Our fonts, images and the 3D model all load from this website, so your browser does not contact Google or
+            any other company when you visit. Links to Instagram take you to Instagram's own website, where its
+            privacy policy applies.
+          </p>
+
+          <h2 id="security">Keeping it secure</h2>
+          <p>
+            We limit access to the people who need it and use secure, password-protected systems. When we show client
+            projects on this website, we use screenshots that contain no personal information, or sample data.
+          </p>
+
+          <h2 id="rights">Your rights</h2>
+          <p>You can ask us to:</p>
+          <ul>
+            <li>give you a copy of the information we hold about you</li>
+            <li>correct information that is wrong or incomplete</li>
+            <li>delete your information</li>
+            <li>limit or stop how we use it</li>
+            <li>send your information to you or another organisation in a common format</li>
+          </ul>
+          <p>
+            Where we rely on your consent, you can withdraw it at any time. To use any of these rights, email
+            <a href={`mailto:${site.email}`}>{site.email}</a>. It is free, and we will reply within one month.
+          </p>
+
+          <h2 id="complaints">Complaints</h2>
+          <p>If you are unhappy with how we have handled your information, please tell us first so we can put it right.</p>
+          <p>
+            You can also complain to the Information Commissioner's Office (ICO) at
+            <a href="https://ico.org.uk/make-a-complaint" target="_blank" rel="noopener noreferrer">
+              ico.org.uk/make-a-complaint
+            </a>
+            or on 0303 123 1113.
+          </p>
+
+          <h2 id="changes">Changes to this notice</h2>
+          <p>We will update this page if anything changes. The date at the top shows when it was last updated.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .updated {
+    margin-top: 16px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  .contact-box {
+    display: grid;
+    gap: 6px;
+    margin: 28px 0;
+    padding: 22px 24px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    font-size: 16.5px;
+  }
+  .contact-box span:first-child {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  /* Tables get their own scroll container so the page body never scrolls
+     sideways on a phone. */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 24px 0;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+  table {
+    width: 100%;
+    min-width: 520px;
+    border-collapse: collapse;
+    font-size: 16px;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  th {
+    font: 700 14px/1.4 Montserrat, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg-alt);
+  }
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+</style>

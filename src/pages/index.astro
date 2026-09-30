@@ -1,0 +1,219 @@
+---
+/**
+ * Homepage.
+ *
+ * Targets the primary commercial query — web design and marketing in Surrey
+ * Quays — while covering all three service lines. The local-proof block sits
+ * high on the page because "are they actually near me" is the first thing a
+ * local customer wants answered, and because it is the one claim our
+ * competitors for this query cannot make.
+ */
+import Base from '../layouts/Base.astro';
+import HeroStage from '../components/HeroStage.astro';
+import ServiceCards from '../components/ServiceCards.astro';
+import CaseStudies from '../components/CaseStudies.astro';
+import Process from '../components/Process.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Faq from '../components/Faq.astro';
+import { site } from '../data/site';
+import { areas } from '../data/areas';
+import { faqPage } from '../lib/schema';
+
+const faqs = [
+  {
+    q: 'Where are you based?',
+    a: `At ${site.address.street}, ${site.address.locality} ${site.address.postcode} — on Lower Road in Surrey Quays, a few minutes from Surrey Quays Overground station. ${site.name} is the agency side of ${site.legalName}, the walk-in photo studio at the same address, so you can come and see us.`,
+  },
+  {
+    q: 'What does a website cost?',
+    a: 'Most small-business websites land between £1,200 and £4,000, depending on the number of pages and whether you need online booking or payments. Marketing runs from £350 a month. Every quote is fixed before work starts, and the full breakdown is on our pricing page.',
+  },
+  {
+    q: 'How long does a project take?',
+    a: 'A focused small-business website is usually three to five weeks from first conversation to launch. Larger builds with booking systems or payments run six to ten weeks. You get a timeline with the quote.',
+  },
+  {
+    q: 'Do you only work with businesses in SE16?',
+    a: 'No. We are based in Surrey Quays and most of our clients are within a few miles, but we work across south east London and beyond — Alterique, one of the businesses on our work page, is in Walthamstow. Being local means site visits and photography are easy, not that we turn work away.',
+  },
+  {
+    q: 'Can you do the photography as well as the website?',
+    a: 'Yes, and it is usually the biggest single improvement. We run a photo studio at the same address, so the pictures on your website are shot by the same team that builds it rather than bought from a stock library.',
+  },
+  {
+    q: 'Do I have to sign a long contract?',
+    a: 'No. Website builds are fixed-price projects. Marketing runs month to month with thirty days notice. We would rather keep you because the work is producing results.',
+  },
+];
+
+/** Home turf and near neighbours, for the internal-linking block. */
+const localAreas = areas.filter((a) => a.tier <= 2);
+---
+
+<Base
+  title="Web Design & Marketing in Surrey Quays | SQ Creative Media"
+  description={site.description}
+  bareTitle
+  schemas={[faqPage(faqs)]}
+>
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <h1 class="display" id="hero-title">
+            <span>Build.</span><span>Grow.</span><span class="accent">Elevate.</span>
+          </h1>
+          <p class="lede">
+            We design websites, run digital marketing and create content for growing businesses. One team, in a
+            studio on Lower Road in Surrey Quays, handles all of it.
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="/contact/">Start a project</a>
+            <a class="btn btn-ghost" href="/work/">See our work</a>
+          </div>
+          <ul class="service-strip" aria-label="What we do">
+            <li>Website Build</li>
+            <li>Digital Marketing</li>
+            <li>Creatives</li>
+          </ul>
+        </div>
+        <HeroStage />
+      </div>
+    </section>
+
+    <!-- Local proof, high on the page. Every agency ranking for "web design
+         surrey quays" is based somewhere else; this is the differentiator. -->
+    <section class="section" aria-labelledby="local-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="local-title">An SE16 agency, not a national one with a landing page</h2>
+          <p>
+            Search for a web designer in Surrey Quays and you will mostly find agencies in other counties with a
+            page for every postcode in the country. We are on Lower Road. You can walk in.
+          </p>
+        </div>
+        <ul class="highlights">
+          <li>
+            <span class="big">SE16 2UG</span>
+            <p>
+              A real studio at {site.address.street}, a few minutes from Surrey Quays station. Meet us in person
+              before you commit to anything.
+            </p>
+          </li>
+          <li>
+            <span class="big">3 in 1</span>
+            <p>
+              Website, marketing and photography from one team, so your brand looks and sounds the same everywhere
+              customers find you.
+            </p>
+          </li>
+          <li>
+            <span class="big">Local clients</span>
+            <p>
+              Including a photo studio on Lower Road and a tailoring business in Walthamstow. Both live, both named,
+              both on our work page.
+            </p>
+          </li>
+          <li>
+            <span class="big">Fixed quotes</span>
+            <p>
+              A written plan, a timeline and a price before any work starts. No hourly creep and no surprise
+              invoices.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="services" aria-labelledby="services-title">
+      <div class="wrap">
+        <ServiceCards />
+      </div>
+    </section>
+
+    <section class="section" id="work" aria-labelledby="work-title">
+      <div class="wrap">
+        <CaseStudies />
+        <p class="section-more">
+          <a class="btn btn-ghost" href="/work/">See the work in detail</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="process" aria-labelledby="process-title">
+      <div class="wrap">
+        <Process />
+      </div>
+    </section>
+
+    <!-- Links to every local page. This is how ranking signal reaches them. -->
+    <section class="section" aria-labelledby="areas-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="areas-title">Where we work</h2>
+          <p>
+            Most of our clients are within a few miles of the studio. Pick your area to see how local search works
+            where you trade.
+          </p>
+        </div>
+        <div class="area-grid">
+          {
+            localAreas.map((area) => (
+              <a class="area-card" href={`/areas/${area.slug}/`}>
+                <span class="postcode">{area.postcodes.join(' · ')}</span>
+                <h3>{area.name}</h3>
+                <p>{area.character}</p>
+                <span class="go">Web design in {area.name} &rarr;</span>
+              </a>
+            ))
+          }
+        </div>
+        <p class="section-more">
+          <a class="btn btn-ghost" href="/areas/">All areas we cover</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="section section-alt" aria-labelledby="faq-title">
+      <div class="wrap">
+        <Faq faqs={faqs} heading="Common questions" intro="The things people ask us before getting in touch." />
+      </div>
+    </section>
+
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="wrap contact-grid">
+        <div class="contact-copy">
+          <h2 id="contact-title">Tell us about your project</h2>
+          <p>Share what you need and we will reply with a plan and a quote.</p>
+          <dl class="contact-list">
+            <div>
+              <dt>Phone</dt>
+              <dd><a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></dd>
+            </div>
+            <div>
+              <dt>Email</dt>
+              <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+            </div>
+            <div>
+              <dt>Studio</dt>
+              <dd>{site.address.street}, {site.address.locality} {site.address.postcode}</dd>
+            </div>
+            <div>
+              <dt>Instagram</dt>
+              <dd>
+                <a href={site.instagram} target="_blank" rel="noopener noreferrer">{site.instagramHandle}</a>
+              </dd>
+            </div>
+          </dl>
+        </div>
+        <EnquiryForm source="homepage" />
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .section-more {
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+</style>

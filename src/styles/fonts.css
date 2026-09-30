@@ -1,0 +1,27 @@
+/**
+ * Fonts are served from this site, so visitors' browsers never contact Google
+ * or any other font host. Both files are variable fonts, so one request covers
+ * every weight the design uses.
+ *
+ * These were previously base64 data URIs inside the stylesheet. That blocked
+ * first paint (the browser cannot render until the CSS has fully downloaded and
+ * parsed, and 73 kB of base64 sat in the middle of it) and the fonts could
+ * never be cached separately from the page. As real files they are preloaded in
+ * BaseHead.astro and cached independently.
+ */
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/montserrat-variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url('/fonts/dm-sans-variable.woff2') format('woff2');
+}

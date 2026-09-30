@@ -1,0 +1,172 @@
+---
+/**
+ * Contact page.
+ *
+ * Also the landing page for "web design near me" style searches where the
+ * visitor wants an address and a phone number rather than a sales pitch, so
+ * the practical details come before the form.
+ */
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import { site } from '../data/site';
+
+const crumbs = [{ name: 'Contact' }];
+
+/** Google Maps needs the address URL-encoded. */
+const mapQuery = encodeURIComponent(
+  `${site.address.street}, ${site.address.locality} ${site.address.postcode}`,
+);
+
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+/** Flattens the opening-hours data into one row per day for display. */
+const hoursByDay = days.map((day) => {
+  const slot = site.openingHours.find((s) => (s.days as readonly string[]).includes(day));
+  return { day, hours: slot ? `${slot.opens} – ${slot.closes}` : 'Closed' };
+});
+---
+
+<Base
+  title="Contact Us"
+  description={`Call ${site.phoneDisplay}, email ${site.email}, or come to the studio at ${site.address.street}, ${site.address.locality} ${site.address.postcode}. A few minutes from Surrey Quays station.`}
+  crumbs={crumbs}
+>
+  <Breadcrumbs crumbs={crumbs} />
+
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">Contact</p>
+        <h1>Talk to us</h1>
+        <p class="lede">
+          Call, email or walk in. The first conversation is free and you get a written plan and a fixed quote before
+          any work starts.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href={`tel:${site.phone}`}>Call {site.phoneDisplay}</a>
+          <a class="btn btn-ghost" href={`mailto:${site.email}`}>Email us</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="local-facts">
+          <div class="fact">
+            <h3>Phone</h3>
+            <p><a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></p>
+            <p class="fact-note">Quickest way to reach us during studio hours.</p>
+          </div>
+          <div class="fact">
+            <h3>Email</h3>
+            <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+            <p class="fact-note">We reply within one working day.</p>
+          </div>
+          <div class="fact">
+            <h3>Studio</h3>
+            <p>
+              {site.address.street}<br />
+              {site.address.locality} {site.address.postcode}
+            </p>
+            <p class="fact-note">
+              <a href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`} target="_blank" rel="noopener noreferrer">
+                Open in Google Maps
+              </a>
+            </p>
+          </div>
+          <div class="fact">
+            <h3>Instagram</h3>
+            <p><a href={site.instagram} target="_blank" rel="noopener noreferrer">{site.instagramHandle}</a></p>
+            <p class="fact-note">Recent work and what the studio is up to.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap contact-grid">
+        <div class="contact-copy">
+          <h2>Tell us about your project</h2>
+          <p>
+            The more you tell us, the more useful our first reply will be. If you already have a website, send the
+            address and we will look at it before we call you back.
+          </p>
+
+          <h3 class="hours-title">Studio hours</h3>
+          <dl class="hours">
+            {
+              hoursByDay.map((row) => (
+                <div>
+                  <dt>{row.day}</dt>
+                  <dd>{row.hours}</dd>
+                </div>
+              ))
+            }
+          </dl>
+
+          <p class="finding-us">
+            <strong>Finding us:</strong> we are on Lower Road, a few minutes' walk from Surrey Quays Overground
+            station and about ten minutes from Canada Water. The photo studio at the same address is {
+              site.sister.name
+            }.
+          </p>
+        </div>
+
+        <EnquiryForm source="contact page" />
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .fact p a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 1px;
+  }
+  .fact p a:hover {
+    color: var(--accent-ink);
+  }
+  .fact-note {
+    margin-top: 10px;
+    font-size: 14.5px;
+    color: var(--muted);
+  }
+
+  .hours-title {
+    margin-top: 32px;
+    font-weight: 700;
+    font-size: 19px;
+  }
+  .hours {
+    margin: 14px 0 0;
+    display: grid;
+    gap: 8px;
+    max-width: 340px;
+  }
+  .hours div {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hours dt {
+    font-size: 15.5px;
+    color: var(--ink-soft);
+  }
+  .hours dd {
+    margin: 0;
+    font-size: 15.5px;
+    font-weight: 500;
+  }
+  .finding-us {
+    margin-top: 28px;
+    color: var(--muted);
+    max-width: 38em;
+  }
+  .finding-us strong {
+    color: var(--ink);
+  }
+</style>

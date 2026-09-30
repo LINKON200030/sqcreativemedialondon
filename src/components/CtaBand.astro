@@ -1,0 +1,37 @@
+---
+/**
+ * Closing call to action. Appears near the foot of every content page, because
+ * a local enquiry is usually decided at the end of a page rather than the top.
+ * The phone number is a real tel: link — on mobile that is the highest
+ * converting element on the whole site.
+ */
+import { site } from '../data/site';
+
+interface Props {
+  heading?: string;
+  body?: string;
+  /** Names the area or service so the CTA reads as part of the page. */
+  context?: string;
+}
+
+const {
+  context,
+  heading = context ? `Thinking about a project in ${context}?` : 'Tell us about your project',
+  body = 'Share what you need and we will reply with a plan and a fixed quote. The first conversation costs nothing.',
+} = Astro.props;
+---
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta-band">
+      <div>
+        <h2>{heading}</h2>
+        <p>{body}</p>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/contact/">Start a project</a>
+        <a class="btn btn-ghost" href={`tel:${site.phone}`}>Call {site.phoneDisplay}</a>
+      </div>
+    </div>
+  </div>
+</section>

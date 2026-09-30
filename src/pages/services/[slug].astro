@@ -1,0 +1,221 @@
+---
+/**
+ * Service pages, one per entry in src/data/services.ts.
+ *
+ * These carry the non-geographic and London-wide search intents — "website
+ * design south east london", "local seo agency" — while the area pages under
+ * /areas/ carry the place-specific ones. Keeping that split clear is what stops
+ * the two sets of pages competing with each other for the same query.
+ */
+import type { GetStaticPaths } from 'astro';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import EnquiryForm from '../../components/EnquiryForm.astro';
+import { services } from '../../data/services';
+import { areas } from '../../data/areas';
+import { caseStudies } from '../../data/work';
+import { serviceImages } from '../../lib/images';
+import { site, SITE_URL } from '../../data/site';
+import { serviceSchema, faqPage } from '../../lib/schema';
+
+export const getStaticPaths = (() =>
+  services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }))) satisfies GetStaticPaths;
+
+const { service } = Astro.props;
+
+/** Other services, for cross-linking at the foot of the page. */
+const others = services.filter((s) => s.slug !== service.slug);
+
+/** Case studies that used this service, matched on the tag list. */
+const related = caseStudies.filter((c) =>
+  c.tags.some((tag) => service.bullets.concat(service.name).some((b) => b.toLowerCase() === tag.toLowerCase())),
+);
+
+const localAreas = areas.filter((a) => a.tier <= 2);
+
+const crumbs = [
+  { name: 'Services', url: `${SITE_URL}/services/` },
+  { name: service.name },
+];
+
+/** Short, keyword-led titles. The brand suffix is added by the layout. */
+const titles: Record<string, string> = {
+  'website-design': 'Website Design & Development',
+  'digital-marketing': 'Local SEO & Digital Marketing',
+  'photography-video': 'Photography, Video & Brand Design',
+};
+---
+
+<Base
+  title={titles[service.slug] ?? service.longName}
+  description={service.metaDescription}
+  crumbs={crumbs}
+  schemas={[serviceSchema(service), faqPage(service.faqs)]}
+>
+  <Breadcrumbs crumbs={[{ name: 'Services', url: '/services/' }, { name: service.name }]} />
+
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">{service.name}</p>
+        <h1>{service.longName} in Surrey Quays and south east London</h1>
+        <p class="lede">{service.summary}</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/contact/">Start a project</a>
+          <a class="btn btn-ghost" href={`tel:${site.phone}`}>Call {site.phoneDisplay}</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap with-aside">
+        <div class="prose">
+          {service.intro.map((para) => <p>{para}</p>)}
+
+          <h2>What is included</h2>
+          <ul>
+            {service.bullets.map((b) => <li>{b}</li>)}
+          </ul>
+        </div>
+
+        <aside class="aside-card">
+          <Image src={serviceImages[service.slug]} width={480} alt="" loading="lazy" />
+          <h2>Talk to us about {service.name.toLowerCase()}</h2>
+          <p>A free first conversation, then a written plan and a fixed quote before anything starts.</p>
+          <a class="btn btn-primary" href="/contact/">Start a project</a>
+          <dl>
+            <div>
+              <dt>Phone</dt>
+              <dd><a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></dd>
+            </div>
+            <div>
+              <dt>Studio</dt>
+              <dd>{site.address.street}, {site.address.postcode}</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>How it works in practice</h2>
+          <p>The detail behind each part of the service.</p>
+        </div>
+        <div class="svc-detail">
+          {
+            service.detail.map((block) => (
+              <article>
+                <h3>{block.heading}</h3>
+                <p>{block.body}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    {
+      related.length > 0 && (
+        <section class="section">
+          <div class="wrap">
+            <div class="section-head">
+              <h2>Where we have done this</h2>
+              <p>Live, named, local. Have a look and judge the work for yourself.</p>
+            </div>
+            <div class="area-grid">
+              {related.map((c) => (
+                <a class="area-card" href="/work/">
+                  <span class="postcode">{c.where}</span>
+                  <h3>{c.name}</h3>
+                  <p>{c.summary}</p>
+                  <span class="go">Read the case study &rarr;</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>{service.longName} near you</h2>
+          <p>We are in Surrey Quays, and most of our clients are within a few miles of the studio.</p>
+        </div>
+        <ul class="nearby">
+          {localAreas.map((a) => <li><a href={`/areas/${a.slug}/`}>{a.name}</a></li>)}
+          <li><a href="/areas/">All areas</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <Faq faqs={service.faqs} intro={`What people ask about ${service.longName.toLowerCase()}.`} />
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>The other things we do</h2>
+          <p>All three work better together, but none of them requires the others.</p>
+        </div>
+        <div class="svc-detail">
+          {
+            others.map((s) => (
+              <article>
+                <h3><a href={`/services/${s.slug}/`}>{s.longName}</a></h3>
+                <p>{s.summary}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <CtaBand />
+
+    <section class="section section-alt">
+      <div class="wrap contact-grid">
+        <div class="contact-copy">
+          <h2>Get a quote for {service.name.toLowerCase()}</h2>
+          <p>Tell us what you need and we will reply with a plan and a fixed price.</p>
+          <dl class="contact-list">
+            <div>
+              <dt>Phone</dt>
+              <dd><a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></dd>
+            </div>
+            <div>
+              <dt>Email</dt>
+              <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+            </div>
+          </dl>
+        </div>
+        <EnquiryForm preselect={service.slug} source={`service:${service.slug}`} />
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .svc-detail h3 a {
+    text-decoration: none;
+  }
+  .svc-detail h3 a:hover {
+    color: var(--accent-ink);
+  }
+  .aside-card img {
+    border-radius: 14px;
+    background: var(--card-art);
+  }
+</style>

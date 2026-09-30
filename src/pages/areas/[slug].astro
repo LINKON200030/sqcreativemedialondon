@@ -1,0 +1,250 @@
+---
+/**
+ * Local landing pages, one per entry in src/data/areas.ts.
+ *
+ * The thing that makes these worth publishing is that they are not a template
+ * with the place name swapped in. Every page carries real stations, real
+ * streets, real landmarks, a genuine description of what trading there is like,
+ * and its own questions and answers. The agencies currently ranking for these
+ * queries publish boilerplate, which is both a doorway-page risk for them and
+ * the gap we are aiming at.
+ *
+ * If you add an area, write the content properly. A thin page here can drag the
+ * whole set down.
+ */
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import EnquiryForm from '../../components/EnquiryForm.astro';
+import { areas, getArea, type Area } from '../../data/areas';
+import { services } from '../../data/services';
+import { caseStudiesForArea } from '../../data/work';
+import { site, SITE_URL } from '../../data/site';
+import { areaSchema, faqPage } from '../../lib/schema';
+
+export const getStaticPaths = (() =>
+  areas.map((area) => ({
+    params: { slug: area.slug },
+    props: { area },
+  }))) satisfies GetStaticPaths;
+
+const { area } = Astro.props;
+
+const neighbours = area.neighbours.map(getArea).filter((a): a is Area => a !== undefined);
+
+/** The most relevant case study first — ideally one in this very area. */
+const [featured] = caseStudiesForArea(area.slug);
+const isLocalCase = featured.areaSlug === area.slug;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site ?? SITE_URL).href;
+
+const crumbs = [{ name: 'Areas', url: `${SITE_URL}/areas/` }, { name: area.name }];
+
+const isHomeTurf = area.tier === 1;
+---
+
+<Base
+  title={`Web Design in ${area.name}, ${area.postcodes[0]}`}
+  description={area.metaDescription}
+  crumbs={crumbs}
+  schemas={[areaSchema(area, pageUrl), faqPage(area.faqs)]}
+>
+  <Breadcrumbs crumbs={[{ name: 'Areas', url: '/areas/' }, { name: area.name }]} />
+
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">{area.postcodes.join(' · ')} &middot; {area.borough}</p>
+        <h1>Web design, marketing and photography in {area.name}</h1>
+        <p class="lede">{area.travel}</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/contact/">Start a project</a>
+          <a class="btn btn-ghost" href={`tel:${site.phone}`}>Call {site.phoneDisplay}</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap with-aside">
+        <div class="prose">
+          <p>{area.intro}</p>
+
+          <h2>What we do for {area.name} businesses</h2>
+          <p>
+            All three services, from one team. Most {area.name} clients start with one and add the others once
+            they can see what it is doing.
+          </p>
+          <ul>
+            {
+              services.map((service) => (
+                <li>
+                  <strong>{service.longName}</strong> — {service.summary}{' '}
+                  <a href={`/services/${service.slug}/`}>More about {service.name.toLowerCase()}</a>
+                </li>
+              ))
+            }
+          </ul>
+
+          <h2>Who we help around {area.name}</h2>
+          <p>{area.character}</p>
+          <ul>
+            {area.businessTypes.map((type) => <li>{type}</li>)}
+          </ul>
+
+          <h2>{isHomeTurf ? 'This is our own postcode' : `Getting to ${area.name}`}</h2>
+          <p>
+            Our studio is at {site.address.street}, {site.address.locality} {site.address.postcode}, which is the
+            agency side of {site.legalName} — a walk-in photo studio at the same address. {area.travel}
+            {' '}That matters for two reasons: site visits and photography are straightforward, and you can come and
+            meet us before committing to anything.
+          </p>
+          {
+            area.highStreets.length > 0 && (
+              <p>
+                Within {area.name} we work along {area.highStreets.slice(0, -1).join(', ')}
+                {area.highStreets.length > 1 ? ' and ' : ''}
+                {area.highStreets[area.highStreets.length - 1]}, and with businesses near {
+                  area.landmarks.slice(0, 3).join(', ')
+                }.
+              </p>
+            )
+          }
+        </div>
+
+        <aside class="aside-card">
+          <h2>{area.name} at a glance</h2>
+          <dl>
+            <div>
+              <dt>Postcode</dt>
+              <dd>{area.postcodes.join(', ')}</dd>
+            </div>
+            <div>
+              <dt>Borough</dt>
+              <dd>London Borough of {area.borough}</dd>
+            </div>
+            <div>
+              <dt>Nearest stations</dt>
+              <dd>{area.stations.join(', ')}</dd>
+            </div>
+            <div>
+              <dt>From our studio</dt>
+              <dd>{area.travel}</dd>
+            </div>
+          </dl>
+          <a class="btn btn-primary" href="/contact/">Start a project</a>
+          <p>Or call <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a> and speak to someone who knows the area.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Local knowledge, not a postcode swapped into a template</h2>
+          <p>
+            We put this here so you can check. These are the places we mean when we say we work in {area.name}.
+          </p>
+        </div>
+        <div class="local-facts">
+          <div class="fact">
+            <h3>Stations</h3>
+            <ul>{area.stations.map((s) => <li>{s}</li>)}</ul>
+          </div>
+          <div class="fact">
+            <h3>High streets</h3>
+            <ul>{area.highStreets.map((s) => <li>{s}</li>)}</ul>
+          </div>
+          <div class="fact">
+            <h3>Landmarks</h3>
+            <ul>{area.landmarks.map((s) => <li>{s}</li>)}</ul>
+          </div>
+          <div class="fact">
+            <h3>Trading here</h3>
+            <p>{area.character}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>{isLocalCase ? `Work we have done in ${area.name}` : 'Work we have done nearby'}</h2>
+          <p>
+            {
+              isLocalCase
+                ? 'A live site you can visit, for a business in this area.'
+                : 'Live, named local businesses. Have a look and judge the work for yourself.'
+            }
+          </p>
+        </div>
+        <div class="area-grid">
+          {
+            caseStudiesForArea(area.slug).map((c) => (
+              <a class="area-card" href="/work/">
+                <span class="postcode">{c.where}</span>
+                <h3>{c.name}</h3>
+                <p>{c.summary}</p>
+                <span class="go">Read the case study &rarr;</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <Faq
+          faqs={area.faqs}
+          heading={`Questions from ${area.name} businesses`}
+          intro="The things people in this area ask before getting in touch."
+        />
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Nearby areas we cover</h2>
+          <p>
+            If you trade on the edge of {area.name}, one of these may fit better — or call us and we will tell you
+            straight.
+          </p>
+        </div>
+        <ul class="nearby">
+          {neighbours.map((n) => <li><a href={`/areas/${n.slug}/`}>{n.name}</a></li>)}
+          <li><a href="/areas/">All areas</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <CtaBand context={area.name} />
+
+    <section class="section section-alt">
+      <div class="wrap contact-grid">
+        <div class="contact-copy">
+          <h2>Get a quote for your {area.name} business</h2>
+          <p>Tell us what you need and we will reply with a plan and a fixed price.</p>
+          <dl class="contact-list">
+            <div>
+              <dt>Phone</dt>
+              <dd><a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></dd>
+            </div>
+            <div>
+              <dt>Email</dt>
+              <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+            </div>
+            <div>
+              <dt>Studio</dt>
+              <dd>{site.address.street}, {site.address.locality} {site.address.postcode}</dd>
+            </div>
+          </dl>
+        </div>
+        <EnquiryForm source={`area:${area.slug}`} />
+      </div>
+    </section>
+  </main>
+</Base>

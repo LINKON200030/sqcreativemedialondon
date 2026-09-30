@@ -1,0 +1,37 @@
+---
+/**
+ * Visible breadcrumb trail. The matching BreadcrumbList schema is emitted by
+ * Base.astro from the same `crumbs` array, so pass the identical list to both
+ * — structured data must describe what the page actually shows.
+ */
+import type { Crumb } from '../lib/schema';
+
+interface Props {
+  /** Trail without Home, which is prepended here. */
+  crumbs: Crumb[];
+}
+
+const { crumbs } = Astro.props;
+const trail: Crumb[] = [{ name: 'Home', url: '/' }, ...crumbs];
+---
+
+<div class="wrap breadcrumbs">
+  <nav aria-label="Breadcrumb">
+    <ol>
+      {
+        trail.map((crumb, i) => {
+          const isLast = i === trail.length - 1;
+          return (
+            <li>
+              {isLast || !crumb.url ? (
+                <span aria-current="page">{crumb.name}</span>
+              ) : (
+                <a href={crumb.url.startsWith('http') ? new URL(crumb.url).pathname : crumb.url}>{crumb.name}</a>
+              )}
+            </li>
+          );
+        })
+      }
+    </ol>
+  </nav>
+</div>

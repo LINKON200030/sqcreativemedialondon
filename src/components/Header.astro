@@ -1,0 +1,82 @@
+---
+/**
+ * Sticky glass navigation bar, ported from the original single-file build.
+ *
+ * The two logo images are swapped by CSS (`.on-light` / `.on-dark` read the
+ * --show-on-* tokens) rather than by script, so the correct one is painted on
+ * the first frame in either theme.
+ */
+import { Image } from 'astro:assets';
+import { nav, site } from '../data/site';
+import logoLight from '../assets/logo-light.webp';
+import logoDark from '../assets/logo-dark.webp';
+
+/** Highlights the current section, including child pages like /areas/deptford/. */
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || (href !== '/' && path.startsWith(href));
+---
+
+<header class="nav-shell">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="/" aria-label={`${site.name}, home`}>
+      <Image class="on-light" src={logoLight} width={124} alt="" loading="eager" />
+      <Image class="on-dark" src={logoDark} width={124} alt="" loading="eager" />
+    </a>
+
+    <div class="nav-links">
+      {
+        nav.map((item) => (
+          <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="nav-actions">
+      <div class="theme-switch" role="group" aria-label="Colour theme">
+        <button type="button" data-set-theme="dark" aria-pressed="false">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1Z"></path>
+          </svg>
+          <span class="label">Dark</span>
+        </button>
+        <button type="button" data-set-theme="light" aria-pressed="false">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <circle cx="8" cy="8" r="3"></circle>
+            <path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"
+            ></path>
+          </svg>
+          <span class="label">Light</span>
+        </button>
+      </div>
+
+      <a class="btn btn-primary btn-sm" href="/contact/">Start a project</a>
+
+      <button
+        class="menu-btn"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Open menu"
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M3 6h14M3 10h14M8 14h9"></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <nav aria-label="Mobile">
+      {
+        nav.map((item) => (
+          <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+      <a class="btn btn-primary" href="/contact/">Start a project</a>
+    </nav>
+  </div>
+</header>

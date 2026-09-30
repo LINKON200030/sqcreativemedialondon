@@ -1,0 +1,125 @@
+---
+/**
+ * Services hub. Exists so /services/ is a real page rather than a dead path,
+ * and so the three service pages have a parent to sit under in the breadcrumb
+ * trail and the site structure.
+ */
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ServiceCards from '../../components/ServiceCards.astro';
+import Process from '../../components/Process.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { services } from '../../data/services';
+import { site } from '../../data/site';
+
+const crumbs = [{ name: 'Services' }];
+---
+
+<Base
+  title="Our Services"
+  description="Website design, local SEO and digital marketing, photography and video — from one team in a studio on Lower Road, Surrey Quays. Fixed quotes, no long contracts."
+  crumbs={crumbs}
+>
+  <Breadcrumbs crumbs={crumbs} />
+
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">Services</p>
+        <h1>Three services, one team, one point of contact</h1>
+        <p class="lede">
+          Most businesses end up managing a web developer, a marketer and a photographer who have never spoken to
+          each other. We do all three from one studio in Surrey Quays, which is why the website, the Google listing
+          and the Instagram feed end up looking like the same company.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/contact/">Start a project</a>
+          <a class="btn btn-ghost" href="/pricing/">See pricing</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <ServiceCards heading="What we do" intro="Pick the one you need, or take all three." />
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>In more detail</h2>
+          <p>Each service has its own page, with what is included, what it costs and the questions people ask.</p>
+        </div>
+        <div class="svc-detail">
+          {
+            services.map((service) => (
+              <article>
+                <h3><a href={`/services/${service.slug}/`}>{service.longName}</a></h3>
+                <p>{service.summary}</p>
+                <p class="more"><a href={`/services/${service.slug}/`}>Read more &rarr;</a></p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <Process />
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Why one team rather than three suppliers</h2>
+          <p>It is not just convenience — the work is genuinely better when it is done together.</p>
+        </div>
+        <div class="prose">
+          <p>
+            When the photographer does not know what the website needs, you get pictures in the wrong shape. When
+            the marketer does not control the website, you get campaigns pointing at pages that cannot convert. When
+            nobody owns the whole thing, the Google Business Profile quietly goes out of date and the phone number on
+            the website stops matching the one in the listing — which is the single most common local SEO problem we
+            find.
+          </p>
+          <p>
+            Doing all three ourselves means the pictures are shot to fit the design, the pages are built for the
+            searches we are targeting, and your name, address and phone number are identical everywhere. It also
+            means one number to call when something needs changing.
+          </p>
+          <p>
+            You can reach us on <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a>, or come to the studio at {
+              site.address.street
+            }, {site.address.postcode}.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <CtaBand />
+  </main>
+</Base>
+
+<style>
+  .svc-detail h3 a {
+    text-decoration: none;
+  }
+  .svc-detail h3 a:hover {
+    color: var(--accent-ink);
+  }
+  .svc-detail .more {
+    margin-top: 14px;
+  }
+  .svc-detail .more a {
+    font: 700 14px/1 Montserrat, system-ui, sans-serif;
+    color: var(--accent-ink);
+    text-decoration: none;
+  }
+  .svc-detail .more a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>
