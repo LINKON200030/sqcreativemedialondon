@@ -12,7 +12,7 @@ Four of these are load-bearing. The site will go live without them, but the loca
 
 | | What | Where |
 |---|---|---|
-| 1 | **Check the prices.** They are plausible market rates, not your rates. | `src/pages/pricing.astro`, and the FAQs in `src/data/services.ts` — grep for `£` |
+| ✓ | **Prices are set** — the owner's launch packages, September 2026. If they change, change every copy of them. | `src/pages/pricing.astro`, the FAQs in `src/pages/index.astro` and `src/data/services.ts`, meta descriptions — grep for `£` |
 | 2 | **Connect the enquiry form.** Until you do, it validates and then shows your phone number instead of sending. | Copy `.env.example` to `.env`, set `PUBLIC_FORM_ENDPOINT` |
 | 3 | **Name your form provider in the privacy notice.** It receives everything typed into the form, so it has to be disclosed. | `src/pages/privacy.astro`, "Who we share it with" |
 | 4 | **Confirm the domain.** Every canonical URL, the sitemap and the structured data are built from one constant. | `SITE_URL` in `src/data/site.ts` |

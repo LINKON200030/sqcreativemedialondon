@@ -41,6 +41,11 @@ cannot write something true about a place, do not add it.
 **Keep the meta description under ~155 characters** or Google truncates it. `npm run
 audit` will tell you.
 
+**Prices live in more than one place.** The packages in `src/pages/pricing.astro` are the
+owner's launch prices (September 2026). The same figures are quoted in the FAQs in
+`src/pages/index.astro` and `src/data/services.ts` and in meta descriptions — grep for
+`£` across `src/` and change them together.
+
 **Never import Three.js.** The hero model is `public/q3d.js`, a pre-bundled copy loaded on
 demand by `src/components/HeroStage.astro`. It is deliberately not an npm dependency so it
 cannot end up in the critical path. If you rewrite the scene, keep it out of the main
@@ -69,8 +74,6 @@ form keeps its minimum even when the container is narrower and overflows a 320 p
 
 ## Placeholders still in the repo
 
-- **Prices** in `src/pages/pricing.astro` and the FAQs in `src/data/services.ts` are
-  plausible market rates, not confirmed. They must agree with each other.
 - **`site.geo`** is an approximation of 142 Lower Road; it should match the Google
   Business Profile pin.
 - **`PUBLIC_FORM_ENDPOINT`** is unset, so the enquiry form falls back to showing the phone

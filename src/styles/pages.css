@@ -483,6 +483,9 @@
   padding: 0;
   list-style: none;
   flex: 1;
+  /* Pack bullets at the top when a card has fewer than its neighbours;
+     the spare height goes above the button instead of between the rows. */
+  align-content: start;
 }
 .price-card li {
   position: relative;
@@ -501,6 +504,19 @@
   border-left: 2px solid var(--accent);
   border-bottom: 2px solid var(--accent);
   transform: rotate(-45deg);
+}
+/* One-line note under a price grid (custom builds, photography). Added with the
+   September 2026 package prices, when those moved out of the card grids. */
+.price-note {
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.price-note a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* ---------- trust row ---------- */

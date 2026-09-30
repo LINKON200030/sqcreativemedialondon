@@ -39,7 +39,7 @@ export const services: Service[] = [
     summary:
       'Fast, mobile-first websites built around what your customers came to do: book, buy, call or find you.',
     metaDescription:
-      'Website design and development in Surrey Quays, SE16. Fast, mobile-first sites with booking, payments and SEO built in. Fixed quotes from £1,200.',
+      'Website design and development in Surrey Quays, SE16. Fast, mobile-first sites with booking, payments and SEO built in. Fixed quotes from £299.',
     intro: [
       'A small business website has one job: turn someone who is already looking for what you sell into a booking, an order or a phone call. Most of the sites we replace fail at that for dull reasons — they take five seconds to load on a phone, the phone number is an image, the booking form is three clicks deep, or the whole thing was built for a desktop screen nobody uses any more.',
       'We build every site mobile-first and pre-rendered, which means the page arrives as finished HTML rather than being assembled in the browser. It loads in about a second on mobile data. That is not a vanity metric: page speed is a confirmed Google ranking signal, and it is the difference between a customer waiting and a customer tapping the next result.',
@@ -79,7 +79,7 @@ export const services: Service[] = [
       },
       {
         q: 'What does a website cost?',
-        a: 'Most small-business sites land between £1,200 and £4,000 depending on how many pages you need and whether you want booking or payments. Larger builds and custom systems are quoted individually. Full detail is on the pricing page.',
+        a: 'A one-page site is £299. Most small-business sites are £499 or £799, depending on how many pages you need and whether you want booking or payments. Online shops and custom systems are quoted individually. Full detail is on the pricing page.',
       },
       {
         q: 'Do I own the website?',

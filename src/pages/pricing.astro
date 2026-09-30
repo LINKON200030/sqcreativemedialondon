@@ -2,11 +2,12 @@
 /**
  * Pricing page.
  *
- * ⚠️  THE NUMBERS ON THIS PAGE ARE PLACEHOLDERS — REVIEW BEFORE LAUNCH.
+ * Launch prices, set by the owner in September 2026 — deliberately below
+ * typical agency rates while the agency builds its client base.
  *
- * They are set at plausible south-east-London market rates and they agree with
- * the figures quoted in the service-page FAQs (src/data/services.ts), so if you
- * change one, change the other. Search for "£" across src/ to find them all.
+ * The same figures are quoted in the FAQs (src/pages/index.astro and
+ * src/data/services.ts) and in meta descriptions, so if you change one, change
+ * them all. Search for "£" across src/ to find them.
  *
  * Why publish prices at all: "how much does a website cost" is one of the
  * highest-volume commercial queries in this trade, and the agencies ranking
@@ -25,9 +26,9 @@ const crumbs = [{ name: 'Pricing' }];
 
 const websiteTiers = [
   {
-    tier: 'Starter',
+    tier: 'Basic',
     name: 'One-page site',
-    amount: 'from £1,200',
+    amount: '£299',
     note: 'One-off',
     body: 'For a business that mainly needs to be findable, with a phone number and an enquiry form.',
     features: [
@@ -39,77 +40,83 @@ const websiteTiers = [
     ],
   },
   {
-    tier: 'Most popular',
+    tier: 'Standard · Most popular',
     name: 'Small business site',
-    amount: 'from £2,400',
+    amount: '£499',
     note: 'One-off',
-    body: 'Four to eight pages, a page per service, and content written for the searches you want to win.',
+    body: 'Up to five pages, a page per service, and content written for the searches you want to win.',
     features: [
-      'Up to 8 pages, mobile-first',
+      'Up to 5 pages, mobile-first',
       'A page per service, each optimised',
-      'Online booking or payments if you need them',
-      'Photography session included',
+      'Enquiry form, click-to-call and WhatsApp',
       'Local SEO set-up and structured data',
+      'Google Business Profile set up properly',
       'Hosting and care for the first year',
     ],
     featured: true,
   },
   {
-    tier: 'Larger builds',
-    name: 'Custom',
-    amount: 'from £4,000',
-    note: 'Quoted per project',
-    body: 'Shops, booking systems, client portals, or software built around a process that off-the-shelf tools do not fit.',
+    tier: 'Pro',
+    name: 'Booking and payments site',
+    amount: '£799',
+    note: 'One-off',
+    body: 'Up to ten pages, with online booking or payments built in and photographs of your actual business.',
     features: [
-      'Ecommerce and online ordering',
-      'Booking, deposits and Stripe payments',
-      'Client logins and private galleries',
-      'Custom systems — see SQ Management on our work page',
-      'Ongoing development retainer available',
+      'Up to 10 pages, mobile-first',
+      'Online booking or Stripe payments',
+      'One-hour photo shoot included',
+      'Local SEO set-up and structured data',
+      'Google Business Profile set up properly',
+      'Hosting and care for the first year',
     ],
   },
 ];
 
-const retainers = [
+const marketingPackages = [
   {
-    tier: 'Local',
-    name: 'Local SEO',
-    amount: '£350',
+    tier: 'Basic',
+    name: 'Social starter',
+    amount: '£399',
     note: 'per month · 30 days notice',
-    body: 'The groundwork that makes you findable in your own postcode.',
+    body: 'A steady feed on Instagram and TikTok, and a Google listing that brings in calls.',
     features: [
+      '4 short videos a month',
+      '4 designed posts a month',
+      'Instagram and TikTok managed',
       'Google Business Profile managed',
-      'Local search pages built and improved',
-      'Review generation and responses',
+      'Basic SEO',
       'Monthly plain-English report',
     ],
   },
   {
-    tier: 'Growth',
-    name: 'Marketing and content',
-    amount: '£750',
+    tier: 'Standard · Recommended',
+    name: 'Social and local SEO',
+    amount: '£699',
     note: 'per month · 30 days notice',
-    body: 'Local SEO plus social media and the content to feed it.',
+    body: 'Twice the content, Facebook as well, and local SEO that goes past the basics.',
     features: [
-      'Everything in Local SEO',
-      'Instagram and Facebook managed',
-      'A content shoot every month',
-      'Ad campaigns managed (ad spend separate)',
-      'Monthly call to review the numbers',
+      '8 short videos a month',
+      '8 designed posts a month',
+      'Instagram, TikTok and Facebook managed',
+      'Google Business Profile managed',
+      'Local SEO and review generation',
+      'Monthly plain-English report',
     ],
     featured: true,
   },
   {
-    tier: 'Creative',
-    name: 'Photography',
-    amount: 'from £280',
-    note: 'per shoot',
-    body: 'A half-day in our studio on Lower Road or at your premises.',
+    tier: 'Pro',
+    name: 'Social, SEO and ads',
+    amount: '£999',
+    note: 'per month · 30 days notice',
+    body: 'The most content, plus paid ads and a monthly call to steer it all.',
     features: [
-      'Two to three hours of shooting',
-      'Edited files sized for web, print and social',
-      'Full commercial licence, no expiry',
-      'Video and reels quoted alongside',
+      '12 short videos a month',
+      '12 designed posts a month',
+      'Instagram, TikTok and Facebook managed',
+      'Google Business Profile and local SEO',
+      'Ad campaigns managed (ad spend separate)',
+      'Monthly call to review the numbers',
     ],
   },
 ];
@@ -122,6 +129,10 @@ const faqs = [
   {
     q: 'What makes a project cost more than the starting price?',
     a: 'Page count, online payments or booking, ecommerce, anything needing a login, and how much content needs writing or photographing from scratch. We tell you which of those apply to you on the first call.',
+  },
+  {
+    q: 'What counts as a video or a design in the marketing packages?',
+    a: 'A video is a short vertical clip for Reels or TikTok, usually 15 to 60 seconds, filmed and edited by us. A design is a finished post, either a single image or a carousel, made in your branding. We agree each month’s plan with you before anything goes out.',
   },
   {
     q: 'Do you take payment in stages?',
@@ -144,7 +155,7 @@ const faqs = [
 
 <Base
   title="Pricing"
-  description="What a website and marketing actually cost. Websites from £1,200, local SEO from £350 a month, photography from £280. Fixed quotes, no long contracts."
+  description="What a website and marketing actually cost. Websites from £299, marketing from £399 a month, photography from £280. Fixed quotes, no long contracts."
   crumbs={crumbs}
   schemas={[faqPage(faqs)]}
 >
@@ -187,18 +198,22 @@ const faqs = [
             ))
           }
         </div>
+        <p class="price-note">
+          Need an online shop, client logins or a custom system like <a href="/work/">SQ Management</a>? Those are
+          quoted per project.
+        </p>
       </div>
     </section>
 
     <section class="section section-alt">
       <div class="wrap">
         <div class="section-head">
-          <h2>Marketing and creative</h2>
+          <h2>Marketing packages</h2>
           <p>Month to month, thirty days notice, cancel whenever it stops earning its cost.</p>
         </div>
         <div class="price-grid">
           {
-            retainers.map((t) => (
+            marketingPackages.map((t) => (
               <article class:list={['price-card', t.featured && 'is-featured']}>
                 <span class="tier">{t.tier}</span>
                 <h3>{t.name}</h3>
@@ -210,6 +225,10 @@ const faqs = [
             ))
           }
         </div>
+        <p class="price-note">
+          Just need photographs? <a href="/services/photography-video/">Studio or on-location shoots</a> start at £280,
+          with a full commercial licence.
+        </p>
       </div>
     </section>
 
