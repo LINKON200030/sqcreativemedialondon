@@ -58,6 +58,30 @@ const jsonLd = graph(
       } catch (e) {}
     </script>
 
+    <!-- Decides, before first paint, whether this visitor gets motion: no if
+         they have asked for reduced motion, no if they are on Save-Data. The
+         attribute gates every rule in the "motion and depth" block of
+         pages.css, so a no from here leaves the static site untouched.
+
+         The timeout is the failsafe. The reveal animations have a hidden first
+         frame, so if the motion chunk never arrives — offline, blocked, a
+         failed deploy — the attribute is pulled back off and everything is
+         visible again. -->
+    <script is:inline>
+      try {
+        if (
+          !matchMedia('(prefers-reduced-motion: reduce)').matches &&
+          !(navigator.connection && navigator.connection.saveData)
+        ) {
+          document.documentElement.dataset.motion = 'on';
+          setTimeout(function () {
+            var r = document.documentElement;
+            if (r.dataset.motionReady !== 'on') delete r.dataset.motion;
+          }, 2500);
+        }
+      } catch (e) {}
+    </script>
+
     <script type="application/ld+json" is:inline set:html={jsonLd} />
   </head>
 
@@ -117,6 +141,19 @@ const jsonLd = graph(
             menuBtn.focus();
           }
         });
+      }
+
+      /**
+       * Scroll reveals, 3D tilt and scroll-linked depth, in a chunk of their
+       * own. Dynamically imported so framer-motion is never part of the main
+       * bundle and is only fetched for a visitor who will actually see it —
+       * the attribute is set by the guard in <head>. If the chunk fails, the
+       * attribute comes off and the page stays the static one.
+       */
+      if (root.dataset.motion === 'on') {
+        import('../scripts/motion')
+          .then((m) => m.initMotion())
+          .catch(() => delete root.dataset.motion);
       }
     </script>
   </body>

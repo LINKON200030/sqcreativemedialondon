@@ -46,6 +46,28 @@ owner's launch prices (September 2026). The same figures are quoted in the FAQs 
 `src/pages/index.astro` and `src/data/services.ts` and in meta descriptions — grep for
 `£` across `src/` and change them together.
 
+**framer-motion stays on the vanilla entry.** The motion layer is `src/scripts/motion.ts`,
+built on `framer-motion/dom` and `framer-motion/dom/mini` — never on `framer-motion` itself.
+The root entry is the React one, and importing it would pull a UI framework into a site that
+does not have one. `motion.ts` is dynamically imported from `Base.astro` so it builds as its
+own chunk (~12 kB gzipped) and the main bundle stays at ~1.3 kB. To check, run `npm run
+build` and look at `dist/_astro/`: if framer-motion has landed in the Base script chunk,
+something is importing it statically.
+
+The mini animator hands keyframes to the Web Animations API, so it takes real CSS properties
+— whole `transform` strings, not `y` or `rotateX`. It also keeps filling after it finishes
+*and* writes its last keyframe to inline style, and both of those outrank every CSS rule
+however specific. That is why `reveal()` cancels the animation and clears the inline styles
+when it is done. Without it, a card that has been revealed can never tilt.
+
+**Motion is opt-in, and the page is complete without it.** The inline guard in `Base.astro`
+sets `data-motion="on"` before first paint, and only if the visitor has not asked for reduced
+motion and is not on Save-Data. Every rule in the "motion and depth" block of `pages.css` is
+gated on that attribute, and the guard takes it back off if the chunk has not arrived within
+2.5 seconds — so a hidden first frame can never become permanently hidden content. Reveals
+are only given to elements measured as below the fold, which is what keeps the hero out of
+it. Keep all three of those properties if you change this.
+
 **Never import Three.js.** The hero model is `public/q3d.js`, a pre-bundled copy loaded on
 demand by `src/components/HeroStage.astro`. It is deliberately not an npm dependency so it
 cannot end up in the critical path. If you rewrite the scene, keep it out of the main

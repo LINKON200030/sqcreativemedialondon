@@ -68,12 +68,20 @@ What the browser actually downloads on a first visit to the homepage:
 |---|---|---|
 | HTML | 46 kB | 9 kB |
 | CSS (whole site, one file) | 25 kB | 5 kB |
-| JavaScript | 2.4 kB | 0.9 kB |
+| JavaScript | 2.5 kB | 1.0 kB |
 | Both fonts (self-hosted, preloaded) | 73 kB | 73 kB |
 | **Total before images** | **147 kB** | **88 kB** |
 
-The 2.4 kB of JavaScript is the theme toggle, the mobile menu and Astro's link
-prefetcher. That is the entire runtime.
+The 2.5 kB of JavaScript is the theme toggle, the mobile menu, Astro's link prefetcher and
+the few lines that decide whether this visitor gets motion. That is the entire critical
+path.
+
+Two things load after it and only when they are worth loading. The 3D "Q" in the hero
+(`public/q3d.js`) waits for the stage to scroll into view and for the browser to go idle.
+The motion layer (`src/scripts/motion.ts`, 11 kB brotli) is a separate chunk that is only
+fetched for a visitor who has not asked for reduced motion and is not on Save-Data — it adds
+the scroll reveals, the cards that tilt towards the pointer and the depth in the hero. The
+page is finished and readable before either arrives, and correct if neither ever does.
 
 **Why not Next.js or WordPress.** Next.js ships a React runtime to render pages that
 never change between builds. WordPress adds a database query, a plugin stack and a
