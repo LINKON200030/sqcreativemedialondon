@@ -21,11 +21,20 @@ import { Image } from 'astro:assets';
 import { heroImages } from '../lib/images';
 
 /**
- * Below this width the still image is used instead. Phones are where Core Web
- * Vitals are measured and where the data costs the visitor real money, and the
- * stills are a rendering of the same model.
+ * Below this width the still image is used instead.
+ *
+ * This was 700, which meant no phone ever loaded the scene and the Q could not
+ * be dragged on the device most visitors arrive on. 320 is the narrowest any
+ * phone has ever reported, so the gate no longer excludes one — it is only
+ * still here to keep the scene away from something genuinely tiny.
+ *
+ * The cost is real and worth stating: the bundle is ~100 kB brotli, and on a
+ * phone that is somebody's mobile data. The other four conditions above are
+ * what keep that honest — it is still fetched only once the stage is on screen
+ * and the browser is idle, so it cannot delay the largest contentful paint, and
+ * a visitor on Save-Data or asking for reduced motion still never downloads it.
  */
-const MIN_WIDTH_FOR_3D = 700;
+const MIN_WIDTH_FOR_3D = 320;
 ---
 
 <div

@@ -98,5 +98,10 @@ form keeps its minimum even when the container is narrower and overflows a 320 p
 
 - **`site.geo`** is an approximation of 142 Lower Road; it should match the Google
   Business Profile pin.
-- **`PUBLIC_FORM_ENDPOINT`** is unset, so the enquiry form falls back to showing the phone
-  number. Whichever provider is chosen must be named in `src/pages/privacy.astro`.
+- **`PUBLIC_FORM_ENDPOINT`** is set in `.env` to FormSubmit, delivering to the owner's
+  address, and FormSubmit is named in `src/pages/privacy.astro`. Two things are still
+  outstanding: FormSubmit has to be activated once by submitting the form and clicking the
+  link it emails, and `.env` is gitignored, so the same variables must be set in the host's
+  environment or the deployed form falls back to showing the phone number. The endpoint
+  currently carries the address in plain sight; the aliased `formsubmit.co/el/…` URL from
+  the activation email is the better thing to deploy.

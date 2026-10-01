@@ -34,6 +34,15 @@ interface Props {
 const { preselect, source = Astro.url.pathname } = Astro.props;
 
 const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+
+/**
+ * Several providers answer on two URLs: a plain one that redirects to their own
+ * thank-you page, and one for XHR that replies with JSON and the CORS headers a
+ * fetch needs. Where that is so, `action` keeps the no-JavaScript POST landing
+ * somewhere sensible and the script posts here instead. One endpoint providers
+ * just leave this unset.
+ */
+const jsEndpoint = import.meta.env.PUBLIC_FORM_ENDPOINT_JS || endpoint;
 ---
 
 <form
@@ -43,6 +52,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   action={endpoint || undefined}
   novalidate
   data-endpoint={endpoint}
+  data-endpoint-js={jsEndpoint}
 >
   <div class="field-row">
     <div class="field">
@@ -165,6 +175,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
     const nameField = document.getElementById('f-name');
     const emailField = document.getElementById('f-email');
     const endpoint = form.dataset.endpoint;
+    const endpointJs = form.dataset.endpointJs || endpoint;
 
     const fallback = 'Please call ' + contactPhone + ' or email ' + contactEmail + '.';
 
@@ -216,7 +227,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
       status.textContent = 'Sending…';
 
       try {
-        const response = await fetch(endpoint, {
+        const response = await fetch(endpointJs, {
           method: 'POST',
           body: new FormData(form),
           headers: { Accept: 'application/json' },
