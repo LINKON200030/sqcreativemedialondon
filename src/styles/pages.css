@@ -672,3 +672,210 @@
     max-width: none;
   }
 }
+
+/* ---------- motion and depth ----------
+   Resting states and composed transforms for src/scripts/motion.ts, which
+   drives everything here through custom properties. Kept in this file rather
+   than edited into components.css so the original ported design stays
+   traceable.
+
+   Nothing in this block applies unless the inline guard in Base.astro has set
+   data-motion="on" on <html>, which it does only when the visitor has not asked
+   for reduced motion and is not on Save-Data. Without JavaScript, or if the
+   motion chunk fails to arrive, the attribute is absent or removed and the page
+   is exactly the static one it was before. */
+
+/* The first frame of the reveal. The same numbers are the opening keyframes in
+   motion.ts, so the animation starts where this leaves off. Only applied to
+   elements the script has measured as being below the fold, so this can never
+   hide anything already on screen. */
+html[data-motion='on'] [data-reveal] {
+  opacity: 0;
+  transform: perspective(900px) translateY(26px) rotateX(-7deg) scale(0.975);
+}
+
+/* ---- pointer-driven 3D tilt ---- */
+/* The transform rules are scoped away from [data-reveal]: a card that is still
+   waiting to be revealed is not a tilt surface yet, and without the :not() the
+   two rules carry identical specificity and the later one would quietly win. */
+/* One transform per card: the lift, the depth and both rotations. The script
+   adds data-tilt-live only after it has wired a card up, so a card it skipped
+   keeps whatever the original stylesheet gave it. */
+html[data-motion='on'] [data-tilt-live]:not([data-reveal]) {
+  transform: perspective(1200px) translate3d(0, var(--tilt-lift, 0px), 0)
+    rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform-style: preserve-3d;
+}
+/* A compositor layer is worth asking for while a card is being tilted, and not
+   worth holding on sixteen cards that are sitting still. */
+html[data-motion='on'] [data-tilt-live]:hover {
+  will-change: transform;
+}
+
+/* A sheen that tracks the pointer across the card, so the surface reads as
+   something being lit rather than a rectangle being rotated. */
+html[data-motion='on'] [data-tilt-live]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--tilt-sheen, 0);
+  background: radial-gradient(
+    38% 50% at var(--tilt-mx, 50%) var(--tilt-my, 50%),
+    rgba(255, 255, 255, 0.30),
+    transparent 72%
+  );
+  mix-blend-mode: soft-light;
+}
+
+/* The cards need a positioning context for the sheen, and a shadow that leans
+   the way the card does — the shadow is most of why a tilt reads as depth. */
+html[data-motion='on'] .svc[data-tilt-live],
+html[data-motion='on'] .price-card[data-tilt-live],
+html[data-motion='on'] .area-card[data-tilt-live],
+html[data-motion='on'] .fact[data-tilt-live],
+html[data-motion='on'] .aside-card[data-tilt-live],
+html[data-motion='on'] .cta-band[data-tilt-live] {
+  position: relative;
+  box-shadow:
+    calc(var(--tilt-yn, 0) * -1.1px)
+    calc(14px + var(--tilt-xn, 0) * 1.1px)
+    calc(26px + var(--tilt-sheen, 0) * 22px)
+    -18px
+    rgba(17, 17, 15, calc(0.16 + var(--tilt-sheen, 0) * 0.14));
+}
+html[data-theme='dark'][data-motion='on'] .svc[data-tilt-live],
+html[data-theme='dark'][data-motion='on'] .price-card[data-tilt-live],
+html[data-theme='dark'][data-motion='on'] .area-card[data-tilt-live],
+html[data-theme='dark'][data-motion='on'] .fact[data-tilt-live],
+html[data-theme='dark'][data-motion='on'] .aside-card[data-tilt-live],
+html[data-theme='dark'][data-motion='on'] .cta-band[data-tilt-live] {
+  box-shadow:
+    calc(var(--tilt-yn, 0) * -1.1px)
+    calc(14px + var(--tilt-xn, 0) * 1.1px)
+    calc(26px + var(--tilt-sheen, 0) * 22px)
+    -16px
+    rgba(0, 0, 0, calc(0.45 + var(--tilt-sheen, 0) * 0.25));
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme='light'])[data-motion='on'] .svc[data-tilt-live],
+  html:not([data-theme='light'])[data-motion='on'] .price-card[data-tilt-live],
+  html:not([data-theme='light'])[data-motion='on'] .area-card[data-tilt-live],
+  html:not([data-theme='light'])[data-motion='on'] .fact[data-tilt-live],
+  html:not([data-theme='light'])[data-motion='on'] .aside-card[data-tilt-live],
+  html:not([data-theme='light'])[data-motion='on'] .cta-band[data-tilt-live] {
+    box-shadow:
+      calc(var(--tilt-yn, 0) * -1.1px)
+      calc(14px + var(--tilt-xn, 0) * 1.1px)
+      calc(26px + var(--tilt-sheen, 0) * 22px)
+      -16px
+      rgba(0, 0, 0, calc(0.45 + var(--tilt-sheen, 0) * 0.25));
+  }
+}
+
+/* The area cards transition transform on hover in the static design. The spring
+   owns it now, so drop the transition and keep the border and shadow ones. */
+html[data-motion='on'] .area-card[data-tilt-live] {
+  transition: border-color 0.2s ease;
+}
+
+/* The devices get their perspective from their own transform now, so the
+   container must not apply a second one on top. The resting ±9° is read out of
+   --ry by the script and becomes the spring's rest position, so the look is
+   unchanged until the pointer arrives. */
+html[data-motion='on'] .case-media {
+  perspective: none;
+}
+html[data-motion='on'] .device[data-tilt-live]:not([data-reveal]) {
+  transform: perspective(1600px) translate3d(0, var(--tilt-lift, 0px), 0)
+    rotateY(var(--tilt-y, 0deg)) rotateX(var(--tilt-x, 0deg));
+  transition: background-color 0.4s ease;
+}
+/* No sheen over a screenshot — it reads as a smudge rather than as glass. */
+html[data-motion='on'] .device[data-tilt-live]::after {
+  content: none;
+}
+
+/* The art inside a service card leans the opposite way to the card, which is
+   what sells the parallax. .svc clips its overflow, so it cannot hold a
+   preserve-3d subtree — this is a 2D nudge off the same values. */
+html[data-motion='on'] .svc[data-tilt-live] .svc-art img {
+  transform: translate3d(calc(var(--tilt-yn, 0) * 1.6px), calc(var(--tilt-xn, 0) * -1.6px), 0)
+    scale(calc(1 + var(--tilt-sheen, 0) * 0.03));
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+/* ...which replaces the ported hover lift, so that rule must stop competing. */
+html[data-motion='on'] .svc[data-tilt-live]:hover .svc-art img {
+  transform: translate3d(calc(var(--tilt-yn, 0) * 1.6px), calc(var(--tilt-xn, 0) * -1.6px - 4px), 0)
+    scale(1.03);
+}
+
+/* ---- hero depth ---- */
+/* --hero-p is 0 at the top of the page and 1 when the hero has scrolled out,
+   written by one scroll subscription in motion.ts. */
+html[data-motion='on'] .hero {
+  --hero-p: 0;
+  background:
+    radial-gradient(
+      calc(55% + var(--hero-p) * 18%) calc(65% + var(--hero-p) * 18%) at 78% 46%,
+      var(--hero-glow),
+      transparent 70%
+    ),
+    var(--bg);
+}
+html[data-motion='on'] .hero-copy {
+  transform: translate3d(0, calc(var(--hero-p) * -26px), 0);
+}
+html[data-motion='on'] .hero-stage {
+  transform: translate3d(0, calc(var(--hero-p) * 44px), 0) scale(calc(1 - var(--hero-p) * 0.06));
+}
+
+/* ---- nav ---- */
+/* Tightens up once the page has moved, so the bar sits over content rather
+   than floating in the hero. */
+html[data-motion='on'] .nav-shell .nav {
+  transition: box-shadow 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+}
+html[data-motion='on'] .nav-shell[data-stuck='on'] .nav {
+  transform: scale(0.985);
+  box-shadow: 0 18px 44px -16px rgba(0, 0, 0, 0.26);
+}
+
+
+/* ---- hero stills ---- */
+/* The pre-rendered stills breathe, so the stage is not completely static on the
+   machines that never load the WebGL scene. They are faded out when it does
+   load, so this costs nothing visible once the model is live. CSS rather than
+   JavaScript because an infinite loop has no business holding a frame callback
+   open for the life of the page. */
+@keyframes sq-float {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -12px, 0);
+  }
+}
+html[data-motion='on'] .hero-stage .stage-fallback {
+  animation: sq-float 4.5s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+html[data-motion='on'] .hero-stage .stage-fallback.on-light {
+  animation-duration: 5s;
+}
+
+/* ---- buttons ---- */
+/* The squeeze. framer-motion's `press` sets data-pressed — it follows the
+   pointer off the edge of the button and releases on cancel, which :active
+   does not. The transform is left to CSS. */
+html[data-motion='on'] .btn {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+    transform 0.18s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+html[data-motion='on'] .btn:hover {
+  transform: translateY(-2px);
+}
+html[data-motion='on'] .btn[data-pressed='on'] {
+  transform: translateY(-1px) scale(0.96);
+}
