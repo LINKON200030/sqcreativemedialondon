@@ -41,16 +41,22 @@ export const site = {
   },
 
   /**
-   * Approximate coordinates for 142 Lower Road, SE16 2UG.
-   * Verify against the Google Business Profile pin before launch — schema geo
-   * should agree with the profile.
+   * Coordinates for 142 Lower Road, SE16 2UG, taken from Google Maps' pin for
+   * the address (October 2026). The previous value was about 100 m away.
+   * Schema geo should agree with the Google Business Profile, so re-check this
+   * against the agency's own profile pin once that profile is live.
    */
-  geo: { lat: 51.4934, lng: -0.0479 },
+  geo: { lat: 51.4928, lng: -0.0468 },
 
   /** E.164 for `tel:` links and schema; display form for humans. */
   phone: '+447367293944',
   phoneDisplay: '07367 293944',
-  email: 'support@sqcreativemedialondon.co.uk',
+  /**
+   * The contact address is on sqcreativemedia.co.uk, not on the website's own
+   * domain. That is deliberate — it is the address the owner gives out
+   * everywhere else, and it has to be the same in every place.
+   */
+  email: 'support@sqcreativemedia.co.uk',
 
   instagram: 'https://www.instagram.com/sqcreativemedialondon/',
   instagramHandle: '@sqcreativemedialondon',
@@ -62,11 +68,17 @@ export const site = {
   },
 
   /**
-   * Opening hours in schema.org format. Update if the studio hours change.
+   * Opening hours in schema.org format. These are the photo studio's hours,
+   * confirmed by the owner in October 2026: the agency is behind the same door,
+   * and the site tells people they can walk in. If the studio's hours change,
+   * change them here and on the Google Business Profile together.
    */
   openingHours: [
-    { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '18:00' },
-    { days: ['Saturday'], opens: '10:00', closes: '17:30' },
+    {
+      days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      opens: '08:30',
+      closes: '17:30',
+    },
   ],
 
   /** Shown in schema as `priceRange`; keep in step with /pricing. */

@@ -3,8 +3,9 @@
 Astro 7 static site for SQ Creative Media London — a web design, marketing and
 photography agency at 142 Lower Road, Surrey Quays, SE16. Built for local search.
 
-Read `README.md` first; it covers the stack, the layout and the SEO strategy. This file
-covers the things that are easy to break.
+Read `docs/development.md` first; it covers the stack, the layout and the SEO strategy.
+This file covers the things that are easy to break. `README.md` is the short public
+description of the project, so keep working notes out of it.
 
 ## Commands
 
@@ -40,6 +41,11 @@ cannot write something true about a place, do not add it.
 
 **Keep the meta description under ~155 characters** or Google truncates it. `npm run
 audit` will tell you.
+
+**The visit counter and the privacy notice change together.** Visits are counted with
+Vercel Web Analytics, from the tag in `src/layouts/Base.astro`. `src/pages/privacy.astro`
+says exactly what it records. Swap the tool, add custom events or add any other tracker and
+that page has to be rewritten in the same change — it is a legal document.
 
 **Prices live in more than one place.** The packages in `src/pages/pricing.astro` are the
 owner's launch prices (September 2026). The same figures are quoted in the FAQs in
@@ -96,7 +102,7 @@ form keeps its minimum even when the container is narrower and overflows a 320 p
 
 ## Placeholders still in the repo
 
-- **`site.geo`** is an approximation of 142 Lower Road; it should match the Google
-  Business Profile pin.
+- **`site.geo`** matches Google Maps' pin for 142 Lower Road (October 2026). The agency
+  has no Google Business Profile of its own yet; when it does, check the two still agree.
 - **`PUBLIC_FORM_ENDPOINT`** is unset, so the enquiry form falls back to showing the phone
   number. Whichever provider is chosen must be named in `src/pages/privacy.astro`.
