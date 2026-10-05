@@ -6,6 +6,7 @@
  * The page ships as finished HTML. The only scripts are the theme toggle and
  * the mobile menu — about 1 kB between them — plus Astro's link prefetcher.
  * The 3D logo on the homepage loads separately and only when it is visible.
+ * The visit counter is a deferred script served by the host, not built here.
  */
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
@@ -42,6 +43,21 @@ const jsonLd = graph(
     : []),
   ...schemas,
 );
+
+/**
+ * Visit counting with Vercel Web Analytics, using Vercel's plain script tag
+ * rather than the npm package so the site keeps no analytics dependency.
+ * It sets no cookies, and both the script and the hits go to this domain.
+ *
+ * Production builds only, so `astro dev` never asks for a file that exists
+ * only on Vercel. `npm run preview` will log a 404 for it; that is expected.
+ * Nothing is counted until Web Analytics is switched on for the project in the
+ * Vercel dashboard and the site is deployed again.
+ *
+ * What it records is described in src/pages/privacy.astro. Change one and you
+ * must change the other.
+ */
+const countVisits = import.meta.env.PROD;
 ---
 
 <!doctype html>
@@ -83,6 +99,17 @@ const jsonLd = graph(
     </script>
 
     <script type="application/ld+json" is:inline set:html={jsonLd} />
+
+    {
+      countVisits && (
+        <>
+          <script is:inline>
+            window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+          </script>
+          <script is:inline defer src="/_vercel/insights/script.js" />
+        </>
+      )
+    }
   </head>
 
   <body>

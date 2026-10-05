@@ -41,6 +41,11 @@ cannot write something true about a place, do not add it.
 **Keep the meta description under ~155 characters** or Google truncates it. `npm run
 audit` will tell you.
 
+**The visit counter and the privacy notice change together.** Visits are counted with
+Vercel Web Analytics, from the tag in `src/layouts/Base.astro`. `src/pages/privacy.astro`
+says exactly what it records. Swap the tool, add custom events or add any other tracker and
+that page has to be rewritten in the same change — it is a legal document.
+
 **Prices live in more than one place.** The packages in `src/pages/pricing.astro` are the
 owner's launch prices (September 2026). The same figures are quoted in the FAQs in
 `src/pages/index.astro` and `src/data/services.ts` and in meta descriptions — grep for

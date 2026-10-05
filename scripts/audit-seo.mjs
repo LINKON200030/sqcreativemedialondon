@@ -7,6 +7,11 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const DIST = 'dist';
+/**
+ * Paths the host serves itself, so they are never in dist/ and must not be
+ * reported as broken links. /_vercel/ is Vercel's Web Analytics script.
+ */
+const HOST_PROVIDED = ['/_vercel/'];
 const pages = [];
 (function walk(dir) {
   for (const e of readdirSync(dir)) {
@@ -45,7 +50,9 @@ for (const file of pages) {
     }
   }
 
-  for (const m of html.matchAll(/(?:href|src)="(\/[^"#?]*)"/g)) allLinks.add(m[1]);
+  for (const m of html.matchAll(/(?:href|src)="(\/[^"#?]*)"/g)) {
+    if (!HOST_PROVIDED.some((prefix) => m[1].startsWith(prefix))) allLinks.add(m[1]);
+  }
 
   rows.push({ route, title, desc, h1s, ldTypes, noindex, bytes: Buffer.byteLength(html) });
   if (!noindex) {
