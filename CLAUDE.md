@@ -96,7 +96,7 @@ form keeps its minimum even when the container is narrower and overflows a 320 p
 
 ## Placeholders still in the repo
 
-- **`site.geo`** is an approximation of 142 Lower Road; it should match the Google
-  Business Profile pin.
+- **`site.geo`** matches Google Maps' pin for 142 Lower Road (October 2026). The agency
+  has no Google Business Profile of its own yet; when it does, check the two still agree.
 - **`PUBLIC_FORM_ENDPOINT`** is unset, so the enquiry form falls back to showing the phone
   number. Whichever provider is chosen must be named in `src/pages/privacy.astro`.

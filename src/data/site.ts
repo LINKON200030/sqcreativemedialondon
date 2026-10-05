@@ -41,11 +41,12 @@ export const site = {
   },
 
   /**
-   * Approximate coordinates for 142 Lower Road, SE16 2UG.
-   * Verify against the Google Business Profile pin before launch — schema geo
-   * should agree with the profile.
+   * Coordinates for 142 Lower Road, SE16 2UG, taken from Google Maps' pin for
+   * the address (October 2026). The previous value was about 100 m away.
+   * Schema geo should agree with the Google Business Profile, so re-check this
+   * against the agency's own profile pin once that profile is live.
    */
-  geo: { lat: 51.4934, lng: -0.0479 },
+  geo: { lat: 51.4928, lng: -0.0468 },
 
   /** E.164 for `tel:` links and schema; display form for humans. */
   phone: '+447367293944',
