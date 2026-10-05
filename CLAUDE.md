@@ -3,8 +3,9 @@
 Astro 7 static site for SQ Creative Media London — a web design, marketing and
 photography agency at 142 Lower Road, Surrey Quays, SE16. Built for local search.
 
-Read `README.md` first; it covers the stack, the layout and the SEO strategy. This file
-covers the things that are easy to break.
+Read `docs/development.md` first; it covers the stack, the layout and the SEO strategy.
+This file covers the things that are easy to break. `README.md` is the short public
+description of the project, so keep working notes out of it.
 
 ## Commands
 
