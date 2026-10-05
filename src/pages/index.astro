@@ -60,8 +60,22 @@ const localAreas = areas.filter((a) => a.tier <= 2);
     <section class="hero" aria-labelledby="hero-title">
       <div class="wrap hero-grid">
         <div class="hero-copy">
+          {
+            /*
+             * The eyebrow is part of the h1 on purpose: the slogan alone tells a
+             * search engine or an AI assistant nothing about what we are or
+             * where. The wording differs from the Surrey Quays area page's h1
+             * so the two do not compete. Each span sits on its own line so the
+             * heading reads as words, not "Build.Grow.Elevate." — .display is a
+             * flex column, so the whitespace is not rendered.
+             * (A JS comment, so it stays out of the published HTML.)
+             */
+          }
           <h1 class="display" id="hero-title">
-            <span>Build.</span><span>Grow.</span><span class="accent">Elevate.</span>
+            <span class="eyebrow">Web design and marketing agency in Surrey Quays, London</span>
+            <span>Build.</span>
+            <span>Grow.</span>
+            <span class="accent">Elevate.</span>
           </h1>
           <p class="lede">
             We design websites, run digital marketing and create content for growing businesses. One team, in a

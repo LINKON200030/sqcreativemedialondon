@@ -85,6 +85,20 @@
   margin-top: 34px;
 }
 
+/* ---------- homepage hero eyebrow ---------- */
+/* The homepage h1 used to be the slogan alone, so the page's main heading said
+   nothing about what the business is or where. The eyebrow puts that inside
+   the same h1, above the slogan, in the style the inner pages use.
+   .display is ported verbatim in components.css and sizes everything inside it
+   as the slogan, so each of those properties is reset here rather than there.
+   The uppercase comes from .display. */
+.display .eyebrow {
+  font: 700 12px/1.5 Montserrat, system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  color: var(--accent-ink);
+  margin-bottom: 20px;
+}
+
 /* ---------- long-form prose ---------- */
 .prose {
   max-width: 68ch;
